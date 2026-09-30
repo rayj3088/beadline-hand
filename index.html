@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Beadline Hand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=Hanken+Grotesk:wght@400;500;600&family=Fragment+Mono&display=swap">
+<style>
+/* Layout: sticky 3D stage on the left, control and load panel on the right; stacked on phones. */
+:root {
+  --font-display: 'Bricolage Grotesque', 'Arial Narrow', system-ui, sans-serif;
+  --font-body: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-data: 'Fragment Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --bg: #E8EDEF;
+  --panel: #F3F6F7;
+  --ink: #13242B;
+  --muted: #52666F;
+  --line: #C3CFD4;
+  --stage: #D7E0E4;
+  --sel: #DCE5E8;
+  --ghost: #5C7886;
+  --motor: #3B505A;
+  --cap: #13242B;
+  --pull: #D9701C;
+  --push: #2B6BD6;
+  --over: #C0283A;
+  --idle: #8597A0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0C1519; --panel: #121E24; --ink: #E3EDF0; --muted: #8FA4AD; --line: #25363E;
+    --stage: #091116; --sel: #1A2A31; --ghost: #9EC0CD; --motor: #6F8C98; --cap: #E3EDF0;
+    --pull: #F29A4C; --push: #73A6FF; --over: #FF6B7A; --idle: #5E727B;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0C1519; --panel: #121E24; --ink: #E3EDF0; --muted: #8FA4AD; --line: #25363E;
+  --stage: #091116; --sel: #1A2A31; --ghost: #9EC0CD; --motor: #6F8C98; --cap: #E3EDF0;
+  --pull: #F29A4C; --push: #73A6FF; --over: #FF6B7A; --idle: #5E727B;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 400 14px/1.45 var(--font-body);
+  padding-inline: 16px; padding-block: 16px 40px;
+}
+.wrap { max-width: 1200px; margin-inline: auto; display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); }
+header h1 { font: 600 clamp(26px, 5vw, 36px)/1.05 var(--font-display); letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+header p { margin: 8px 0 0; color: var(--muted); max-width: 62ch; font-size: 15px; }
+.stage-col { min-width: 0; }
+.stage { position: relative; background: var(--stage); border: 1px solid var(--line); border-radius: 8px 8px 0 0; overflow: hidden; }
+#c { display: block; width: 100%; height: clamp(320px, 56vh, 500px); touch-action: pan-y; cursor: grab; }
+.legend { position: absolute; left: 12px; top: 10px; display: flex; flex-wrap: wrap; gap: 4px 14px; font: 400 11px var(--font-data); color: var(--muted); pointer-events: none; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+#nogl { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-top: 0; background: var(--panel); border-radius: 0 0 8px 8px; }
+.toolbar .sp { flex: 1 1 auto; }
+.cap { margin: 8px 2px 0; color: var(--muted); font-size: 12px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  appearance: none; font: 500 13px/1 var(--font-body); color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 6px; padding: 9px 12px; min-height: 38px; cursor: pointer;
+}
+.chip:hover { border-color: var(--muted); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip:disabled { opacity: .45; cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.panel { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.blk { display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid var(--line); min-width: 0; }
+.blk:first-child { border-top: 0; padding-top: 0; }
+.lab { font: 400 11px var(--font-data); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.hint { margin: 0; color: var(--muted); font-size: 13px; max-width: 60ch; }
+.srow { display: grid; grid-template-columns: minmax(0, 1fr) 56px; gap: 10px; align-items: center; }
+.srow output { font: 400 12px var(--font-data); text-align: right; font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--ink); margin: 0; min-height: 28px; }
+.lrow { display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.lhead { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.lname { font-weight: 600; }
+.lmeta { display: flex; flex-wrap: wrap; gap: 2px 14px; font: 400 12px var(--font-data); color: var(--muted); font-variant-numeric: tabular-nums; }
+.pill { font: 400 11px/1 var(--font-data); padding: 4px 7px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.s-ok { color: var(--ink); border-color: var(--ink); }
+.s-near { color: var(--over); border-color: var(--over); }
+.s-over { background: var(--over); border-color: var(--over); color: var(--bg); }
+.sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 14px; }
+.sum .k { font: 400 11px var(--font-data); color: var(--muted); }
+.sum .v { font: 400 16px var(--font-data); font-variant-numeric: tabular-nums; }
+.sum .sub { font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.mrow {
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) 48px; gap: 10px; align-items: center;
+  width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line);
+  padding: 7px 6px; color: var(--ink); font: 400 12px var(--font-data); cursor: pointer;
+}
+.mrow.sel { background: var(--sel); }
+.mname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.track { height: 6px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.track i { display: block; height: 100%; width: 0; background: var(--idle); }
+.mrow.pull .track i { background: var(--pull); }
+.mrow.push .track i { background: var(--push); }
+.mrow.over .track i { background: var(--over); }
+.mval { text-align: right; font-variant-numeric: tabular-nums; }
+details.blk summary { cursor: pointer; font: 400 11px var(--font-data); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+details.blk[open] summary { margin-bottom: 8px; }
+.params { display: flex; flex-direction: column; gap: 10px; }
+.params label { font-size: 13px; }
+ul.notes { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; color: var(--muted); font-size: 13px; max-width: 62ch; }
+@media (min-width: 920px) {
+  .wrap { grid-template-columns: minmax(0, 1.2fr) minmax(360px, .8fr); align-items: start; }
+  header { grid-column: 1 / -1; }
+  .stage-col { position: sticky; top: 16px; }
+  #c { height: clamp(500px, 76vh, 740px); }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+<style>[hidden]{display:none!important}html{color-scheme:light}body{margin:0}@media (prefers-color-scheme: dark){html{color-scheme:dark}}</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Beadline Hand</h1>
+    <p>Every joint is driven by one bead-and-cord line in a tube. Pull the line to grip, push it to open.</p>
+  </header>
+
+  <section class="stage-col" aria-label="3D hand view">
+    <div class="stage">
+      <canvas id="c" role="img" aria-label="Ghosted 3D hand with 17 bead-and-cord lines running from motors in the forearm to each joint"></canvas>
+      <div class="legend" aria-hidden="true">
+        <span><i class="dot" style="background:var(--pull)"></i>Pull</span>
+        <span><i class="dot" style="background:var(--push)"></i>Push</span>
+        <span><i class="dot" style="background:var(--idle)"></i>Idle</span>
+        <span><i class="dot" style="background:var(--over)"></i>Over limit</span>
+      </div>
+      <div id="nogl" hidden>The 3D view needs WebGL. The controls and numbers still work.</div>
+    </div>
+    <div class="toolbar">
+      <button type="button" class="chip" data-view="palm" aria-pressed="false">Palm</button>
+      <button type="button" class="chip" data-view="side" aria-pressed="false">Side</button>
+      <button type="button" class="chip" data-view="back" aria-pressed="false">Back</button>
+      <button type="button" class="chip" data-view="angle" aria-pressed="true">Angle</button>
+      <span class="sp"></span>
+      <button type="button" class="chip" id="cyc" aria-pressed="false">Cycle</button>
+    </div>
+    <p class="cap">Drag sideways to orbit, scroll or pinch to zoom, tap a finger to select it.</p>
+  </section>
+
+  <section class="panel" aria-label="Controls and loads">
+    <div class="blk">
+      <div class="lab">Pose</div>
+      <div class="chips">
+        <button type="button" class="chip" data-pose="open">Open</button>
+        <button type="button" class="chip" data-pose="fist">Fist</button>
+        <button type="button" class="chip" data-pose="point">Point</button>
+        <button type="button" class="chip" data-pose="pinch">Pinch</button>
+      </div>
+    </div>
+
+    <div class="blk">
+      <label class="lab" for="wr">Wrist bend</label>
+      <div class="srow"><input type="range" id="wr" min="-60" max="60" step="1" value="0"><output id="wro" for="wr">0°</output></div>
+      <p class="hint">Bending the wrist bends every tube, which adds friction.</p>
+    </div>
+
+    <div class="blk">
+      <div class="lab">Load case</div>
+      <div class="chips">
+        <button type="button" class="chip" id="m-grip" aria-pressed="true">Grip (pull)</button>
+        <button type="button" class="chip" id="m-rel" aria-pressed="false">Release (push)</button>
+      </div>
+      <p class="hint" id="modehint"></p>
+      <label class="lab" for="p-F">Fingertip force</label>
+      <div class="srow"><input type="range" id="p-F" min="0" max="40" step="0.5" value="6"><output id="o-F" for="p-F">6 N</output></div>
+    </div>
+
+    <div class="blk">
+      <div class="lab">Digit</div>
+      <div class="chips" id="tabs"></div>
+      <div id="rows"></div>
+    </div>
+
+    <div class="blk">
+      <div class="lab">Load on all 17 lines</div>
+      <div class="sum" id="sum"></div>
+      <div id="map"></div>
+    </div>
+
+    <details class="blk">
+      <summary>Assumptions</summary>
+      <div class="params">
+        <div><label for="p-mu">Friction per radian of bend</label>
+          <div class="srow"><input type="range" id="p-mu" min="0.02" max="0.3" step="0.01" value="0.10"><output id="o-mu" for="p-mu">0.10</output></div></div>
+        <div><label for="p-ratio">Opening force as a share of grip force</label>
+          <div class="srow"><input type="range" id="p-ratio" min="0.05" max="1" step="0.05" value="0.2"><output id="o-ratio" for="p-ratio">20%</output></div></div>
+        <div><label for="p-cord">Cord break load</label>
+          <div class="srow"><input type="range" id="p-cord" min="100" max="600" step="10" value="300"><output id="o-cord" for="p-cord">300 N</output></div></div>
+        <div><label for="p-push">Bead column push limit at the motor</label>
+          <div class="srow"><input type="range" id="p-push" min="5" max="60" step="1" value="20"><output id="o-push" for="p-push">20 N</output></div></div>
+      </div>
+    </details>
+
+    <details class="blk">
+      <summary>How it is modeled</summary>
+      <ul class="notes">
+        <li>Each joint has one line. Stroke in millimeters is the joint's moment arm times its angle.</li>
+        <li>The fingertip joint follows the middle joint at two thirds of its angle, so it needs no line of its own.</li>
+        <li>Tension at the motor is tension at the finger times e to the power (friction times total bend). Total bend is about 0.95 rad of routing, plus the wrist angle, plus the knuckle angle for tubes that cross a knuckle.</li>
+        <li>Pushing uses 1.6 times the friction of pulling, because beads drag sideways. The push limit is where the bead column would buckle.</li>
+        <li>Joint ranges, moment arms, finger lengths, forces and cord strength are rounded textbook-level estimates, not measurements. Change them under Assumptions. Beads are drawn oversize so they are visible.</li>
+      </ul>
+    </details>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+'use strict';
+const D2R = Math.PI / 180;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const $ = (id) => document.getElementById(id);
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+let reduce = false;
+try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+
+/* ---------- data: digits and lines (cm for geometry, mm for moment arms) ---------- */
+const DN = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky'];
+const W = 8, PH = 9.5, PT = 2.2;
+const FING = [null,
+  { x: -3, L: [4.5, 2.6, 2.1], r: 0.88, sg: 1 },
+  { x: -1, L: [4.9, 3.0, 2.2], r: 0.90, sg: 1 },
+  { x: 1, L: [4.6, 2.8, 2.1], r: 0.85, sg: -1 },
+  { x: 3, L: [3.7, 2.0, 1.9], r: 0.72, sg: -1 }
+];
+const TH = { L: [4.4, 3.3, 2.6], r: 0.95 };
+
+const lines = [];
+function addLine(o) { o.i = lines.length; o.cur = 0; o.tgt = 0; lines.push(o); }
+const tl = TH.L, tfull = (tl[0] + tl[1] + tl[2]) * 10;
+addLine({ d: 0, k: 'abd', label: 'Base spread', short: 'Spread', min: 0, max: 45, arm: 9, lever: tfull, lf: 0.5, eng: 10, cross: -1 });
+addLine({ d: 0, k: 'flex', label: 'Base bend', short: 'Base bend', min: 0, max: 50, arm: 9, lever: tfull, lf: 1, eng: 10, cross: -1 });
+addLine({ d: 0, k: 'opp', label: 'Opposition roll', short: 'Oppose', min: 0, max: 60, arm: 6, lever: tfull, lf: 0.5, eng: 10, cross: -1 });
+addLine({ d: 0, k: 'mcp', label: 'Knuckle bend', short: 'Knuckle', min: 0, max: 60, arm: 7, lever: (tl[1] + tl[2]) * 10, lf: 1, eng: 10, cross: -1 });
+addLine({ d: 0, k: 'ip', label: 'Tip bend', short: 'Tip', min: 0, max: 80, arm: 5, lever: tl[2] * 10, lf: 1, eng: 10, cross: 3 });
+for (let d = 1; d <= 4; d++) {
+  const L = FING[d].L, full = (L[0] + L[1] + L[2]) * 10, b = lines.length;
+  addLine({ d, k: 'mcp', label: 'Knuckle bend', short: 'Knuckle', min: 0, max: 90, arm: 8, lever: full, lf: 1, eng: 10, cross: -1 });
+  addLine({ d, k: 'swing', label: 'Side swing', short: 'Swing', min: -20, max: 20, arm: 5, lever: full, lf: 0.3, eng: 8, cross: -1 });
+  addLine({ d, k: 'pip', label: 'Middle + tip bend', short: 'Mid + tip', min: 0, max: 110, arm: 6, lever: (L[1] + L[2]) * 10, lf: 1, eng: 10, cross: b });
+}
+const wrist = { cur: 0, tgt: 0 };
+const P = { F: 6, ratio: 0.2, mu: 0.10, cord: 300, push: 20, pushMu: 1.6, grip: true };
+
+function stateOf(m) {
+  if (m.eng < 0.02) return 'idle';
+  if (m.util >= 1) return 'over';
+  if (m.util >= 0.7) return 'near';
+  return 'ok';
+}
+const STATE_TXT = { idle: 'Idle', ok: 'OK', near: 'Near limit', over: 'Over limit' };
+
+function metrics() {
+  const w = Math.abs(wrist.cur) * D2R;
+  const mu = P.grip ? P.mu : P.mu * P.pushMu;
+  const lim = P.grip ? P.cord : P.push;
+  return lines.map((L) => {
+    const th = L.cur * D2R, stroke = L.arm * th;
+    const bend = 0.95 + w + (L.cross >= 0 ? Math.max(0, lines[L.cross].cur) * D2R : 0);
+    const eng = clamp(Math.abs(L.cur) / L.eng, 0, 1);
+    const fo = (P.grip ? P.F : P.F * P.ratio) * L.lf * (L.lever / L.arm) * eng;
+    const tm = fo * Math.exp(mu * bend);
+    return { stroke, bend, eng, loss: 1 - Math.exp(-mu * bend), fo, tm, util: tm / lim };
+  });
+}
+let M = metrics();
+
+/* ---------- presets ---------- */
+function mk(th, f) { const a = th.slice(); f.forEach((x) => a.push(x[0], x[1], x[2])); return a; }
+const Z3 = [0, 0, 0];
+const OPEN = mk([0, 0, 0, 0, 0], [Z3, Z3, Z3, Z3]);
+const FIST = mk([8, 38, 48, 35, 45], [[88, 0, 105], [88, 0, 105], [88, 0, 105], [88, 0, 105]]);
+const POINT = mk([0, 30, 40, 30, 30], [Z3, [88, 0, 105], [88, 0, 105], [88, 0, 105]]);
+let PINCH = null;
+
+/* ---------- 3D scene ---------- */
+let gl = typeof THREE !== 'undefined';
+let renderer, scene, camera, wristG, foreG, beads, C = {};
+const H = [null, null, null, null, null];
+let T = null;
+const gm = [], pick = [];
+let palmMat, foreMat, edgeMat, motorMat, capMat;
+const CP = 48, MAXB = 64, SP = 0.6, CAP0 = -8.1, BODY_TOP = -10.0;
+const cv = $('c');
+const view = { az: 0.5, el: 0.3, dist: 62, taz: 0.5, tel: 0.3 };
+const TGT = { x: 0, y: 3.5, z: 0 };
+let needRender = true, dirtyLines = true, needUI = true;
+let selected = 1, cycle = false, cycleT = 0;
+
+function anchor(parent, x, y, z) { const o = new THREE.Object3D(); o.position.set(x, y, z); parent.add(o); return o; }
+function seg(len, r0, r1, mat, digit) {
+  const g = new THREE.CylinderGeometry(r1, r0, len, 14, 1);
+  const m = new THREE.Mesh(g, mat); m.position.y = len / 2; m.userData.digit = digit;
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 40), edgeMat));
+  pick.push(m); return m;
+}
+function joint(r, mat, digit) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 10), mat); m.userData.digit = digit; pick.push(m); return m;
+}
+
+function buildScene() {
+  renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setClearColor(0x000000, 0);
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(32, 1, 1, 400);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.7); dl.position.set(6, 12, 14); scene.add(dl);
+  const dl2 = new THREE.DirectionalLight(0xffffff, 0.3); dl2.position.set(-8, 4, -10); scene.add(dl2);
+
+  C = { ghost: new THREE.Color(), pull: new THREE.Color(), push: new THREE.Color(), over: new THREE.Color(), idle: new THREE.Color(), tmp: new THREE.Color() };
+  const mkGhost = (o) => new THREE.MeshStandardMaterial({ transparent: true, opacity: o, roughness: 0.55, metalness: 0, depthWrite: false });
+  for (let i = 0; i < 5; i++) gm.push(mkGhost(0.22));
+  palmMat = mkGhost(0.2); foreMat = mkGhost(0.1);
+  edgeMat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.5 });
+  motorMat = new THREE.MeshStandardMaterial({ roughness: 0.6, metalness: 0.2 });
+  capMat = new THREE.MeshStandardMaterial({ roughness: 0.5, metalness: 0.2 });
+
+  foreG = new THREE.Group(); scene.add(foreG);
+  wristG = new THREE.Group(); scene.add(wristG);
+
+  // forearm shell and motors
+  const fg = new THREE.BoxGeometry(7.2, 13, 5.6);
+  const fm = new THREE.Mesh(fg, foreMat); fm.position.y = -6.5; foreG.add(fm);
+  fm.add(new THREE.LineSegments(new THREE.EdgesGeometry(fg), edgeMat));
+  const bodyG = new THREE.BoxGeometry(0.8, 2.4, 0.8), capG = new THREE.BoxGeometry(0.7, 0.3, 0.7), rodG = new THREE.CylinderGeometry(0.05, 0.05, 1, 6);
+
+  // palm and thenar pad
+  const pg = new THREE.BoxGeometry(W, PH, PT);
+  const pm = new THREE.Mesh(pg, palmMat); pm.position.y = PH / 2; wristG.add(pm);
+  pm.add(new THREE.LineSegments(new THREE.EdgesGeometry(pg), edgeMat));
+  const th = new THREE.Mesh(new THREE.SphereGeometry(1.7, 14, 10), gm[0]);
+  th.scale.set(1.1, 1.5, 0.8); th.position.set(-W / 2 + 0.9, 2.4, 0.15); th.userData.digit = 0; wristG.add(th); pick.push(th);
+
+  // fingers
+  for (let d = 1; d <= 4; d++) {
+    const f = FING[d], L = f.L, mat = gm[d];
+    const mcpG = new THREE.Group(); mcpG.position.set(f.x, PH, 0); wristG.add(mcpG);
+    mcpG.add(joint(f.r * 1.05, mat, d));
+    mcpG.add(seg(L[0], f.r, f.r * 0.92, mat, d));
+    const pipG = new THREE.Group(); pipG.position.y = L[0]; mcpG.add(pipG);
+    pipG.add(joint(f.r * 0.95, mat, d));
+    pipG.add(seg(L[1], f.r * 0.92, f.r * 0.84, mat, d));
+    const dipG = new THREE.Group(); dipG.position.y = L[1]; pipG.add(dipG);
+    dipG.add(joint(f.r * 0.86, mat, d));
+    dipG.add(seg(L[2], f.r * 0.84, f.r * 0.7, mat, d));
+    const tipJ = joint(f.r * 0.7, mat, d); tipJ.position.y = L[2]; dipG.add(tipJ);
+    H[d] = { mcpG, pipG, dipG, tip: anchor(dipG, 0, L[2], f.r * 0.5),
+      aMcp: anchor(mcpG, -0.22, 0.45 * L[0], f.r + 0.05),
+      aSwing: anchor(mcpG, f.sg > 0 ? f.r : -f.r, 0.3 * L[0], 0.1),
+      aVia: anchor(mcpG, 0, 0.8 * L[0], f.r + 0.05),
+      aPip: anchor(pipG, 0, 0.45 * L[1], f.r * 0.92 + 0.05) };
+  }
+
+  // thumb
+  const tb = new THREE.Group(); tb.position.set(-W / 2 + 0.4, PH * 0.2, 0.1); tb.rotation.z = 38 * D2R; wristG.add(tb);
+  const cmcG = new THREE.Group(); tb.add(cmcG);
+  cmcG.add(joint(1.1, gm[0], 0));
+  cmcG.add(seg(tl[0], 1.05, 0.95, gm[0], 0));
+  const tMcp = new THREE.Group(); tMcp.position.y = tl[0]; cmcG.add(tMcp);
+  tMcp.add(joint(0.98, gm[0], 0));
+  tMcp.add(seg(tl[1], 0.95, 0.88, gm[0], 0));
+  const tIp = new THREE.Group(); tIp.position.y = tl[1]; tMcp.add(tIp);
+  tIp.add(joint(0.88, gm[0], 0));
+  tIp.add(seg(tl[2], 0.88, 0.72, gm[0], 0));
+  const tj = joint(0.72, gm[0], 0); tj.position.y = tl[2]; tIp.add(tj);
+  T = { cmcG, mcpG: tMcp, ipG: tIp, tip: anchor(tIp, 0, tl[2], 0.5) };
+  const tA = [anchor(cmcG, -0.3, 0.55 * tl[0], 1.0), anchor(cmcG, 0, 0.65 * tl[0], 1.05), anchor(cmcG, 0.3, 0.75 * tl[0], 1.0)];
+  const tVia = anchor(cmcG, 0, 0.9 * tl[0], 1.0);
+  const tVia2 = anchor(tMcp, 0, 0.8 * tl[1], 0.95);
+  const tMcpA = anchor(tMcp, 0, 0.4 * tl[1], 0.95);
+  const tIpA = anchor(tIp, 0, 0.45 * tl[2], 0.9);
+
+  // routing anchors and per-line visuals
+  const fpA = (x) => anchor(foreG, x, -2.2, 1.35);
+  const wpA = (x) => anchor(wristG, x, 0.2, 1.3);
+  const ppA = (x, y) => anchor(wristG, x, y, PT / 2 + 0.15);
+  const mkPath = (L, baseX, ppY, off, via, att) => {
+    L.path = [fpA(baseX * 0.5 + off), wpA(baseX * 0.4 + off), ppA(baseX + off, ppY)].concat(via, [att]);
+  };
+  lines.forEach((L, i) => {
+    if (L.d === 0) {
+      const off = (i - 2) * 0.25, bx = -3;
+      const via = [[], [], [], [tVia], [tVia, tVia2]][i];
+      const att = [tA[0], tA[1], tA[2], tMcpA, tIpA][i];
+      mkPath(L, bx, PH * 0.22, off, via, att);
+    } else {
+      const h = H[L.d], f = FING[L.d], j = (i - 5) % 3, off = (j - 1) * 0.25;
+      const via = j === 2 ? [h.aVia] : [];
+      const att = [h.aMcp, h.aSwing, h.aPip][j];
+      mkPath(L, f.x, PH - 1.2, off, via, att);
+    }
+    const col = i % 6, row = Math.floor(i / 6);
+    L.mx = (col - 2.5) * 1.05; L.mz = (row - 1) * 1.25;
+    const body = new THREE.Mesh(bodyG, motorMat); body.position.set(L.mx, -11.2, L.mz); foreG.add(body);
+    L.cap = new THREE.Mesh(capG, capMat); L.cap.position.set(L.mx, CAP0, L.mz); foreG.add(L.cap);
+    L.rod = new THREE.Mesh(rodG, capMat); L.rod.position.set(L.mx, (BODY_TOP + CAP0) / 2, L.mz); foreG.add(L.rod);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(CP * 3), 3));
+    L.cord = new THREE.Line(geo, new THREE.LineBasicMaterial({ transparent: true, opacity: 0.5 }));
+    L.cord.frustumCulled = false; scene.add(L.cord);
+  });
+
+  beads = new THREE.InstancedMesh(new THREE.SphereGeometry(0.11, 10, 8), new THREE.MeshStandardMaterial({ roughness: 0.45, metalness: 0.1 }), lines.length * MAXB);
+  beads.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  beads.setColorAt(0, new THREE.Color(1, 1, 1));
+  beads.frustumCulled = false; scene.add(beads);
+}
+
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function applyTheme() {
+  if (!gl) return;
+  C.ghost.set(css('--ghost')); C.pull.set(css('--pull')); C.push.set(css('--push')); C.over.set(css('--over')); C.idle.set(css('--idle'));
+  gm.forEach((m) => m.color.copy(C.ghost)); palmMat.color.copy(C.ghost); foreMat.color.copy(C.ghost); edgeMat.color.copy(C.ghost);
+  motorMat.color.set(css('--motor')); capMat.color.set(css('--cap'));
+  dirtyLines = true; needRender = true;
+}
+function setGhostOpacity() {
+  if (!gl) return;
+  gm.forEach((m, i) => { m.opacity = i === selected ? 0.42 : 0.2; });
+  needRender = true;
+}
+
+function applyPose() {
+  wristG.rotation.x = wrist.cur * D2R;
+  for (let d = 1; d <= 4; d++) {
+    const h = H[d], b = 5 + 3 * (d - 1);
+    h.mcpG.rotation.set(lines[b].cur * D2R, 0, FING[d].sg * lines[b + 1].cur * D2R);
+    h.pipG.rotation.x = lines[b + 2].cur * D2R;
+    h.dipG.rotation.x = lines[b + 2].cur * D2R * 2 / 3;
+  }
+  T.cmcG.rotation.set(lines[1].cur * D2R, lines[2].cur * D2R, lines[0].cur * D2R);
+  T.mcpG.rotation.x = lines[3].cur * D2R;
+  T.ipG.rotation.x = lines[4].cur * D2R;
+  lines.forEach((L) => {
+    const capY = CAP0 - L.arm * L.cur * D2R / 10;
+    L.cap.position.y = capY;
+    L.rod.scale.y = Math.max(0.01, capY - BODY_TOP);
+    L.rod.position.y = (BODY_TOP + capY) / 2;
+  });
+  wristG.updateMatrixWorld(true);
+}
+
+function stateColor(m) {
+  const st = stateOf(m);
+  if (st === 'idle') return C.idle;
+  if (st === 'over') return C.over;
+  C.tmp.copy(C.idle).lerp(P.grip ? C.pull : C.push, 0.35 + 0.65 * clamp(m.util / 0.7, 0, 1));
+  if (st === 'near') C.tmp.lerp(C.over, 0.4);
+  return C.tmp;
+}
+
+let _mat, _q, _s, _p;
+function updateLines() {
+  if (!_mat) { _mat = new THREE.Matrix4(); _q = new THREE.Quaternion(); _s = new THREE.Vector3(); _p = new THREE.Vector3(); }
+  lines.forEach((L, li) => {
+    const m = M[li], sel = L.d === selected, off = L.arm * L.cur * D2R / 10;
+    const pts = [new THREE.Vector3(L.mx, CAP0 - off + 0.15, L.mz)];
+    L.path.forEach((a) => pts.push(a.getWorldPosition(new THREE.Vector3())));
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
+    curve.arcLengthDivisions = 90;
+    const len = curve.getLength();
+    const col = stateColor(m);
+    L.cord.material.color.copy(col); L.cord.material.opacity = sel ? 0.95 : 0.35;
+    const pa = L.cord.geometry.attributes.position;
+    for (let i = 0; i < CP; i++) { curve.getPointAt(i / (CP - 1), _p); pa.setXYZ(i, _p.x, _p.y, _p.z); }
+    pa.needsUpdate = true;
+    const n = Math.min(MAXB, Math.floor(len / SP));
+    for (let k = 0; k < MAXB; k++) {
+      const idx = li * MAXB + k; let s = 0;
+      if (k < n) {
+        let u = (k * SP - off) % len; if (u < 0) u += len;
+        s = smooth(0, 0.9, Math.min(u, len - u)) * (sel ? 1.25 : 0.8);
+        curve.getPointAt(u / len, _p);
+      }
+      _s.set(s, s, s); _mat.compose(_p, _q, _s);
+      beads.setMatrixAt(idx, _mat); beads.setColorAt(idx, col);
+    }
+  });
+  beads.instanceMatrix.needsUpdate = true; beads.instanceColor.needsUpdate = true;
+}
+
+function solvePinch() {
+  if (!gl) return [15, 30, 40, 30, 35];
+  const saved = lines.map((l) => l.cur), sw = wrist.cur;
+  wrist.cur = 0; lines.forEach((l) => { l.cur = 0; });
+  lines[5].cur = 50; lines[7].cur = 70;
+  applyPose();
+  const target = H[1].tip.getWorldPosition(new THREE.Vector3());
+  const vals = [15, 25, 35, 25, 30], tmp = new THREE.Vector3();
+  const cost = () => { for (let i = 0; i < 5; i++) lines[i].cur = vals[i]; applyPose(); return T.tip.getWorldPosition(tmp).distanceTo(target); };
+  let best = cost();
+  [16, 8, 4, 2, 1, 0.5].forEach((step) => {
+    for (let it = 0; it < 14; it++) {
+      let imp = false;
+      for (let i = 0; i < 5; i++) {
+        [-1, 1].forEach((sgn) => {
+          const old = vals[i];
+          vals[i] = clamp(old + sgn * step, lines[i].min, lines[i].max);
+          const c = cost();
+          if (c < best - 1e-4) { best = c; imp = true; } else vals[i] = old;
+        });
+      }
+      if (!imp) break;
+    }
+  });
+  lines.forEach((l, i) => { l.cur = saved[i]; }); wrist.cur = sw; applyPose();
+  return vals.slice();
+}
+
+/* ---------- camera, input ---------- */
+function placeCam() {
+  const ce = Math.cos(view.el);
+  camera.position.set(TGT.x + view.dist * Math.sin(view.az) * ce, TGT.y + view.dist * Math.sin(view.el), TGT.z + view.dist * Math.cos(view.az) * ce);
+  camera.lookAt(TGT.x, TGT.y, TGT.z);
+}
+function resize() {
+  if (!gl) return;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); needRender = true;
+}
+const VIEWS = { palm: [0, 0.1], side: [1.45, 0.1], back: [Math.PI, 0.1], angle: [0.5, 0.3] };
+const viewBtns = Array.prototype.slice.call(document.querySelectorAll('[data-view]'));
+function markView(v) { viewBtns.forEach((b) => b.setAttribute('aria-pressed', b.dataset.view === v ? 'true' : 'false')); }
+viewBtns.forEach((b) => b.addEventListener('click', () => { const v = VIEWS[b.dataset.view]; view.taz = v[0]; view.tel = v[1]; markView(b.dataset.view); needRender = true; }));
+
+const ptrs = new Map();
+let moved = 0, pinch0 = 0, dist0 = 62;
+cv.addEventListener('pointerdown', (e) => {
+  try { cv.setPointerCapture(e.pointerId); } catch (x) {}
+  ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, t: e.pointerType });
+  if (ptrs.size === 1) moved = 0;
+  if (ptrs.size === 2) { const a = Array.from(ptrs.values()); pinch0 = Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y); dist0 = view.dist; }
+  cv.style.cursor = 'grabbing';
+});
+cv.addEventListener('pointermove', (e) => {
+  const p = ptrs.get(e.pointerId); if (!p) return;
+  const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
+  if (ptrs.size === 1) {
+    moved += Math.abs(dx) + Math.abs(dy);
+    view.az -= dx * 0.008; view.taz = view.az;
+    if (p.t !== 'touch') { view.el = clamp(view.el + dy * 0.006, -1.2, 1.3); view.tel = view.el; }
+    markView(null);
+  } else if (ptrs.size === 2) {
+    const a = Array.from(ptrs.values()), d = Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y);
+    if (pinch0 > 0 && d > 0) view.dist = clamp(dist0 * pinch0 / d, 28, 110);
+    moved = 99;
+  }
+  needRender = true;
+});
+function endPtr(e, allowPick) {
+  if (!ptrs.has(e.pointerId)) return;
+  ptrs.delete(e.pointerId);
+  if (ptrs.size === 0) {
+    cv.style.cursor = 'grab';
+    if (allowPick && moved < 5 && gl) {
+      const r = cv.getBoundingClientRect();
+      const ndc = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      const ray = new THREE.Raycaster(); ray.setFromCamera(ndc, camera);
+      const hit = ray.intersectObjects(pick, false)[0];
+      if (hit && hit.object.userData.digit >= 0) selectDigit(hit.object.userData.digit);
+    }
+  }
+}
+cv.addEventListener('pointerup', (e) => endPtr(e, true));
+cv.addEventListener('pointercancel', (e) => endPtr(e, false));
+cv.addEventListener('wheel', (e) => { e.preventDefault(); view.dist = clamp(view.dist * Math.exp(e.deltaY * 0.001), 28, 110); needRender = true; }, { passive: false });
+
+/* ---------- UI ---------- */
+const tabsEl = $('tabs'), rowsEl = $('rows'), mapEl = $('map'), sumEl = $('sum');
+let rowEls = [], mapEls = [];
+
+DN.forEach((n, i) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'chip'; b.textContent = n; b.setAttribute('aria-pressed', i === selected ? 'true' : 'false');
+  b.addEventListener('click', () => selectDigit(i));
+  tabsEl.appendChild(b);
+});
+
+function buildMap() {
+  mapEl.innerHTML = ''; mapEls = [];
+  lines.forEach((L) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mrow';
+    b.innerHTML = '<span class="mname">' + DN[L.d] + ' · ' + L.short + '</span><span class="track"><i></i></span><span class="mval">0 N</span>';
+    b.addEventListener('click', () => selectDigit(L.d));
+    mapEl.appendChild(b);
+    mapEls.push({ b, fill: b.querySelector('i'), val: b.querySelector('.mval') });
+  });
+}
+function buildSum() {
+  sumEl.innerHTML =
+    '<div><div class="k">Over limit</div><div class="v" id="s-over">0 of 17</div></div>' +
+    '<div><div class="k">Peak at motor</div><div class="v" id="s-peak">0 N</div><div class="sub" id="s-peakn"></div></div>' +
+    '<div><div class="k">Mean friction loss</div><div class="v" id="s-loss">0%</div></div>';
+}
+function buildRows() {
+  rowsEl.innerHTML = ''; rowEls = [];
+  lines.forEach((L) => {
+    if (L.d !== selected) return;
+    const row = document.createElement('div'); row.className = 'lrow';
+    row.innerHTML =
+      '<div class="lhead"><label class="lname" for="ls-' + L.i + '">' + L.label + '</label><span class="pill s-idle">Idle</span></div>' +
+      '<input type="range" id="ls-' + L.i + '" min="' + L.min + '" max="' + L.max + '" step="1" value="' + L.tgt + '">' +
+      '<div class="lmeta"><span class="a"></span><span class="s"></span><span class="l"></span><span class="t"></span></div>';
+    rowsEl.appendChild(row);
+    const inp = row.querySelector('input');
+    inp.addEventListener('input', () => { stopCycle(); L.tgt = +inp.value; dirtyLines = true; });
+    rowEls.push({ i: L.i, inp, pill: row.querySelector('.pill'), a: row.querySelector('.a'), s: row.querySelector('.s'), l: row.querySelector('.l'), t: row.querySelector('.t') });
+  });
+}
+function selectDigit(d) {
+  selected = d;
+  Array.prototype.forEach.call(tabsEl.children, (b, i) => b.setAttribute('aria-pressed', i === d ? 'true' : 'false'));
+  buildRows(); setGhostOpacity(); dirtyLines = true; needUI = true;
+}
+function setPill(el, st) { el.className = 'pill s-' + st; el.textContent = STATE_TXT[st]; }
+
+function renderUI() {
+  rowEls.forEach((r) => {
+    const L = lines[r.i], m = M[r.i];
+    r.a.textContent = Math.round(L.cur) + '°';
+    r.s.textContent = m.stroke.toFixed(1) + ' mm';
+    r.l.textContent = Math.round(m.loss * 100) + '% loss';
+    r.t.textContent = Math.round(m.tm) + ' N at motor';
+    setPill(r.pill, stateOf(m));
+    if (cycle) r.inp.value = L.tgt;
+  });
+  let over = 0, peak = 0, peakI = -1, lossSum = 0, lossN = 0;
+  lines.forEach((L, i) => {
+    const m = M[i], st = stateOf(m), e = mapEls[i];
+    e.val.textContent = Math.round(m.tm) + ' N';
+    e.fill.style.width = (clamp(m.util, 0, 1) * 100).toFixed(0) + '%';
+    e.b.className = 'mrow' + (L.d === selected ? ' sel' : '') + (st === 'over' ? ' over' : (st === 'idle' ? '' : (P.grip ? ' pull' : ' push')));
+    if (st === 'over') over++;
+    if (m.eng >= 0.02) { lossSum += m.loss; lossN++; if (m.tm > peak) { peak = m.tm; peakI = i; } }
+  });
+  $('s-over').textContent = over + ' of ' + lines.length;
+  $('s-peak').textContent = Math.round(peak) + ' N';
+  $('s-peakn').textContent = peakI >= 0 ? DN[lines[peakI].d] + ' · ' + lines[peakI].short : 'all idle';
+  $('s-loss').textContent = lossN ? Math.round(lossSum / lossN * 100) + '%' : '0%';
+}
+
+function setMode(grip) {
+  P.grip = grip;
+  $('m-grip').setAttribute('aria-pressed', grip ? 'true' : 'false');
+  $('m-rel').setAttribute('aria-pressed', grip ? 'false' : 'true');
+  $('modehint').textContent = grip
+    ? 'The fingertips press on something. Closed joints load their lines in tension, carried by the cord.'
+    : 'The fingertips push open against resistance. Closed joints load their lines in compression, carried by the bead column.';
+  dirtyLines = true; needUI = true;
+}
+$('m-grip').addEventListener('click', () => setMode(true));
+$('m-rel').addEventListener('click', () => setMode(false));
+
+[['F', 'p-F', 'o-F', (v) => v + ' N'], ['mu', 'p-mu', 'o-mu', (v) => v.toFixed(2)], ['ratio', 'p-ratio', 'o-ratio', (v) => Math.round(v * 100) + '%'],
+ ['cord', 'p-cord', 'o-cord', (v) => v + ' N'], ['push', 'p-push', 'o-push', (v) => v + ' N']].forEach((q) => {
+  const inp = $(q[1]), out = $(q[2]);
+  const upd = () => { P[q[0]] = +inp.value; out.textContent = q[3](+inp.value); dirtyLines = true; needUI = true; };
+  inp.addEventListener('input', upd); upd();
+});
+
+const wr = $('wr');
+wr.addEventListener('input', () => { wrist.tgt = +wr.value; $('wro').textContent = wr.value + '°'; dirtyLines = true; });
+
+const cycBtn = $('cyc');
+function stopCycle() { if (cycle) { cycle = false; cycBtn.setAttribute('aria-pressed', 'false'); cycBtn.textContent = 'Cycle'; } }
+cycBtn.addEventListener('click', () => {
+  if (cycle) { stopCycle(); return; }
+  cycle = true; cycleT = 0; cycBtn.setAttribute('aria-pressed', 'true'); cycBtn.textContent = 'Stop';
+});
+if (reduce) { cycBtn.disabled = true; cycBtn.title = 'Turned off because reduced motion is on'; }
+
+function setTargets(arr, w, instant) {
+  stopCycle();
+  lines.forEach((L, i) => { L.tgt = clamp(arr[i], L.min, L.max); if (instant) L.cur = L.tgt; });
+  wrist.tgt = w; if (instant) wrist.cur = w;
+  wr.value = w; $('wro').textContent = w + '°';
+  rowEls.forEach((r) => { r.inp.value = lines[r.i].tgt; });
+  dirtyLines = true; needUI = true;
+}
+document.querySelectorAll('[data-pose]').forEach((b) => b.addEventListener('click', () => {
+  const k = b.dataset.pose;
+  if (k === 'open') setTargets(OPEN, 0);
+  else if (k === 'fist') setTargets(FIST, -10);
+  else if (k === 'point') setTargets(POINT, 0);
+  else setTargets(PINCH, 0);
+}));
+
+/* ---------- main loop ---------- */
+let last = performance.now(), lastUI = 0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (cycle) {
+    cycleT += dt;
+    const s = 0.5 - 0.5 * Math.cos(cycleT * 2 * Math.PI / 3.6);
+    lines.forEach((L, i) => { L.tgt = clamp(OPEN[i] + (FIST[i] - OPEN[i]) * s, L.min, L.max); });
+  }
+  let moving = false;
+  const k = reduce ? 1 : 1 - Math.exp(-dt * 9);
+  lines.concat([wrist]).forEach((L) => {
+    const dl = L.tgt - L.cur;
+    if (Math.abs(dl) > 0.02) { L.cur += dl * k; moving = true; } else if (dl !== 0) { L.cur = L.tgt; moving = true; }
+  });
+  if (moving) dirtyLines = true;
+  if (gl) {
+    const k2 = reduce ? 1 : 1 - Math.exp(-dt * 6);
+    let da = ((view.taz - view.az + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI;
+    const de = view.tel - view.el;
+    if (Math.abs(da) > 0.001 || Math.abs(de) > 0.001) { view.az += da * k2; view.el += de * k2; needRender = true; }
+  }
+  if (dirtyLines) {
+    M = metrics();
+    if (gl) { applyPose(); updateLines(); needRender = true; }
+    dirtyLines = false; needUI = true;
+  }
+  if (needUI && now - lastUI > 50) { renderUI(); lastUI = now; needUI = false; }
+  if (gl && needRender) { placeCam(); renderer.render(scene, camera); needRender = false; }
+}
+
+/* ---------- start ---------- */
+try { if (gl) buildScene(); } catch (e) { gl = false; }
+if (!gl) { $('nogl').hidden = false; cv.style.display = 'none'; $('nogl').style.position = 'static'; $('nogl').style.minHeight = '200px'; }
+if (gl) {
+  applyTheme();
+  try { new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) {}
+  try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme); } catch (e) {}
+  try { new ResizeObserver(resize).observe(cv); } catch (e) { window.addEventListener('resize', resize); }
+  resize();
+}
+const pv = solvePinch();
+PINCH = mk(pv, [[50, 0, 70], [35, 0, 55], [40, 0, 60], [45, 0, 65]]);
+buildMap(); buildSum(); buildRows(); setMode(true); setGhostOpacity();
+setTargets(PINCH, 0, true);
+markView('angle');
+requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
