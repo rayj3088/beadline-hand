@@ -1,8 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Beadline Hand</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,14 +28,14 @@
   :root:not([data-theme="light"]) {
     --bg: #0C1519; --panel: #121E24; --ink: #E3EDF0; --muted: #8FA4AD; --line: #25363E;
     --stage: #091116; --sel: #1A2A31; --ghost: #9EC0CD; --motor: #6F8C98; --cap: #E3EDF0;
-    --pull: #F29A4C; --push: #73A6FF; --over: #FF6B7A; --idle: #5E727B;
+    --pull: #D9772F; --push: #5A8BEA; --over: #FF6B7A; --idle: #5E727B;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0C1519; --panel: #121E24; --ink: #E3EDF0; --muted: #8FA4AD; --line: #25363E;
   --stage: #091116; --sel: #1A2A31; --ghost: #9EC0CD; --motor: #6F8C98; --cap: #E3EDF0;
-  --pull: #F29A4C; --push: #73A6FF; --over: #FF6B7A; --idle: #5E727B;
+  --pull: #D9772F; --push: #5A8BEA; --over: #FF6B7A; --idle: #5E727B;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -108,6 +104,45 @@ details.blk[open] summary { margin-bottom: 8px; }
 .params { display: flex; flex-direction: column; gap: 10px; }
 .params label { font-size: 13px; }
 ul.notes { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; color: var(--muted); font-size: 13px; max-width: 62ch; }
+.tabs { display: flex; gap: 2px; overflow-x: auto; border-bottom: 1px solid var(--line); margin-bottom: -2px; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { appearance: none; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); font: 500 13px/1 var(--font-body); padding: 11px 12px; min-height: 40px; cursor: pointer; white-space: nowrap; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+.tabp { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+select { font: 400 13px var(--font-body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 9px 10px; min-height: 38px; max-width: 100%; }
+.legend2 { display: flex; gap: 16px; font: 400 12px var(--font-data); color: var(--ink); }
+.legend2 span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 14px; height: 3px; display: inline-block; border-radius: 1px; }
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+.chart .tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: 400 11px/1.4 var(--font-data); color: var(--ink); white-space: nowrap; transform: translate(-50%, -100%); }
+.tk { fill: var(--muted); font: 10px var(--font-data); }
+.tl { fill: var(--ink); font: 500 11px var(--font-data); }
+.twrap { overflow-x: auto; }
+table.num { border-collapse: collapse; width: 100%; font: 400 12px var(--font-data); font-variant-numeric: tabular-nums; }
+table.num th, table.num td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+table.num th:first-child, table.num td:first-child { text-align: left; }
+table.num th { color: var(--muted); font-weight: 400; }
+table.num td.bad { color: var(--over); }
+.arch { padding: 12px 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; }
+.arch h3 { margin: 0; font: 600 16px/1.2 var(--font-display); letter-spacing: -0.01em; }
+.arch .who { font: 400 11px var(--font-data); color: var(--muted); }
+.arch p { margin: 0; font-size: 13px; max-width: 64ch; }
+.arch b { font: 400 11px var(--font-data); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-right: 6px; }
+.arch.ours h3::after { content: " · this project"; font: 400 11px var(--font-data); color: var(--muted); letter-spacing: 0; }
+sup.c { font: 400 10px var(--font-data); color: var(--muted); }
+.gaps { display: flex; flex-direction: column; gap: 8px; margin: 0; padding-left: 18px; font-size: 13px; max-width: 64ch; }
+.test { padding: 12px 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 5px; }
+.thead { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.test h3 { margin: 0; font: 600 15px/1.25 var(--font-display); }
+.test p { margin: 0; font-size: 13px; max-width: 64ch; }
+.test b { font: 400 11px var(--font-data); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-right: 6px; }
+.pred { font: 400 12px var(--font-data); color: var(--ink); }
+.srcs { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+.srcs a { color: var(--ink); text-underline-offset: 2px; overflow-wrap: anywhere; }
+.srcs small { display: block; color: var(--muted); font-size: 12px; }
+#csv, .ta { width: 100%; min-height: 120px; font: 400 11px var(--font-data); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px; }
+.note { font-size: 12px; color: var(--muted); max-width: 64ch; margin: 0; }
 @media (min-width: 920px) {
   .wrap { grid-template-columns: minmax(0, 1.2fr) minmax(360px, .8fr); align-items: start; }
   header { grid-column: 1 / -1; }
@@ -115,10 +150,10 @@ ul.notes { margin: 0; padding-left: 18px; display: flex; flex-direction: column;
   #c { height: clamp(500px, 76vh, 740px); }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+code{font-family:var(--mono,monospace);font-size:.92em}
 </style>
 <style>[hidden]{display:none!important}html{color-scheme:light}body{margin:0}@media (prefers-color-scheme: dark){html{color-scheme:dark}}</style>
-</head>
-<body>
+</head><body>
 
 <div class="wrap">
   <header>
@@ -148,7 +183,17 @@ ul.notes { margin: 0; padding-left: 18px; display: flex; flex-direction: column;
     <p class="cap">Drag sideways to orbit, scroll or pinch to zoom, tap a finger to select it.</p>
   </section>
 
-  <section class="panel" aria-label="Controls and loads">
+  <section class="panel" aria-label="Controls and research notes">
+    <div class="tabs" role="tablist" aria-label="Sections">
+      <button type="button" role="tab" class="tab" id="t-sim" data-tab="sim" aria-selected="true" aria-controls="tab-sim">Simulator</button>
+      <button type="button" role="tab" class="tab" id="t-env" data-tab="env" aria-selected="false" aria-controls="tab-env">Envelope</button>
+      <button type="button" role="tab" class="tab" id="t-field" data-tab="field" aria-selected="false" aria-controls="tab-field">Field map</button>
+      <button type="button" role="tab" class="tab" id="t-plan" data-tab="plan" aria-selected="false" aria-controls="tab-plan">Test plan</button>
+      <button type="button" role="tab" class="tab" id="t-kit" data-tab="kit" aria-selected="false" aria-controls="tab-kit">Build kit</button>
+      <button type="button" role="tab" class="tab" id="t-src" data-tab="src" aria-selected="false" aria-controls="tab-src">Sources</button>
+    </div>
+
+    <div class="tabp" id="tab-sim" role="tabpanel" aria-labelledby="t-sim">
     <div class="blk">
       <div class="lab">Pose</div>
       <div class="chips">
@@ -174,6 +219,11 @@ ul.notes { margin: 0; padding-left: 18px; display: flex; flex-direction: column;
       <p class="hint" id="modehint"></p>
       <label class="lab" for="p-F">Fingertip force</label>
       <div class="srow"><input type="range" id="p-F" min="0" max="40" step="0.5" value="6"><output id="o-F" for="p-F">6 N</output></div>
+      <div class="chips">
+        <button type="button" class="chip" data-force="6">Light 6 N</button>
+        <button type="button" class="chip" data-force="15">Medium 15 N</button>
+        <button type="button" class="chip" data-force="25">25 N, Tacta-class</button>
+      </div>
     </div>
 
     <div class="blk">
@@ -186,6 +236,8 @@ ul.notes { margin: 0; padding-left: 18px; display: flex; flex-direction: column;
       <div class="lab">Load on all 17 lines</div>
       <div class="sum" id="sum"></div>
       <div id="map"></div>
+      <button type="button" class="chip" id="copyrun" style="align-self:flex-start">Copy this run as CSV</button>
+      <textarea id="csv" readonly hidden aria-label="Run data as CSV"></textarea>
     </div>
 
     <details class="blk">
@@ -212,6 +264,158 @@ ul.notes { margin: 0; padding-left: 18px; display: flex; flex-direction: column;
         <li>Joint ranges, moment arms, finger lengths, forces and cord strength are rounded textbook-level estimates, not measurements. Change them under Assumptions. Beads are drawn oversize so they are visible.</li>
       </ul>
     </details>
+    </div>
+
+    <div class="tabp" id="tab-env" role="tabpanel" aria-labelledby="t-env" hidden>
+      <div class="blk">
+        <label class="lab" for="env-line">Line under study</label>
+        <select id="env-line"></select>
+        <p class="hint" id="env-read"></p>
+      </div>
+      <div class="blk">
+        <div class="lab">Load against bend</div>
+        <div class="legend2"><span><i class="sw" style="background:var(--pull)"></i>Pull</span><span><i class="sw" style="background:var(--push)"></i>Push</span></div>
+        <div class="chart" id="env-chart"></div>
+        <p class="note">Fingertip force is converted to line tension, multiplied by the friction factor, and shown as a share of the limit. Above 100% the line fails. It uses the force and assumptions from the Simulator tab. Hover or drag across the chart to read values.</p>
+      </div>
+      <div class="blk">
+        <div class="lab">Most grip force the line can carry (N)</div>
+        <div class="twrap" id="tb-pull"></div>
+        <div class="lab">Most opening force the line can carry (N)</div>
+        <div class="twrap" id="tb-push"></div>
+        <p class="note" id="tb-note"></p>
+      </div>
+    </div>
+
+    <div class="tabp" id="tab-field" role="tabpanel" aria-labelledby="t-field" hidden>
+      <p class="note">Scan of Sep 30, 2026. Figures are as reported by vendors and press, and I did not verify them. Numbers in brackets point to the Sources tab.</p>
+      <div>
+        <article class="arch">
+          <h3>Tendon, motors in the forearm</h3>
+          <span class="who">Tesla, 1X, Foundation, Kyber, Daxo</span>
+          <p><b>Bet</b>Light human-size fingers, all the power in the forearm.</p>
+          <p><b>Reported</b>Optimus Gen 3 uses 25 actuators, up from 17 <sup class="c">[2]</sup>. Foundation uses magnetic sensors for finger position and caught a baseball <sup class="c">[2]</sup>. Daxo runs up to 120 tendons and motors, and 1X about 22 DOF <sup class="c">[9]</sup>.</p>
+          <p><b>Open problem</b>Friction in the routing tubes hurts control and wears the strings, so these hands need extra sensing <sup class="c">[2]</sup>. Three patent assignees still treat slack as unsolved <sup class="c">[3]</sup>.</p>
+        </article>
+        <article class="arch">
+          <h3>Direct drive, motors in the fingers</h3>
+          <span class="who">Wuji, Sharpa, Figure's current direction</span>
+          <p><b>Bet</b>No cables, so no friction and very predictable control.</p>
+          <p><b>Reported</b>Wuji Hand 2: 20 DOF, 0.6 kg, 10 kg payload, $16,000, in production <sup class="c">[4]</sup>. Sharpa: 22 DOF in mass production <sup class="c">[2]</sup>. The talk says sim-to-real gap is almost zero for these hands <sup class="c">[9]</sup>.</p>
+          <p><b>Open problem</b>Finger volume limits heat and torque, and motors run close to capacity <sup class="c">[2]</sup>.</p>
+        </article>
+        <article class="arch">
+          <h3>Linkage and hybrids</h3>
+          <span class="who">AGILINK and others</span>
+          <p><b>Bet</b>Rigid links push and pull, so one motor can grip and open.</p>
+          <p><b>Reported</b>A hand can have 15 joints on only 5 motors, so linkages fix part of the motion <sup class="c">[10]</sup>. AGILINK builds both tendon and direct-drive hands <sup class="c">[2]</sup>.</p>
+          <p><b>Open problem</b>Coupled motion means fingers can miss an object, and links are hard to route through a wrist <sup class="c">[9]</sup>.</p>
+        </article>
+        <article class="arch">
+          <h3>Fluidic tendon</h3>
+          <span class="who">Tacta</span>
+          <p><b>Bet</b>Fluid-filled lines drive pistons, so length changes do not matter and the wrist is easy.</p>
+          <p><b>Reported</b>15 DOF, 25 N per fingertip, mechanism life up to 30 million cycles, touch sensing from 250 Pa to 700 kPa, first shipments early 2027. No price or funding was disclosed <sup class="c">[1]</sup>. One source describes five fingers at 3 DOF each and a social post describes three fingers, so check the spec sheet.</p>
+          <p><b>Open problem</b>The actuator base is bulky today <sup class="c">[9]</sup>, and the lifetime figure is the vendor's own.</p>
+        </article>
+        <article class="arch">
+          <h3>Woven tendon</h3>
+          <span class="who">Allonic</span>
+          <p><b>Bet</b>Braid the whole hand around a printed skeleton and treat it as a cheap, replaceable part.</p>
+          <p><b>Reported</b>MK2: 15 DOF, 0.45 kg, 3 kg strength, listed at $2,799, still a prototype, $7.2 million pre-seed in 2026 <sup class="c">[5]</sup>.</p>
+          <p><b>Open problem</b>No durability figures, and it still needs learned control <sup class="c">[9]</sup>.</p>
+        </article>
+        <article class="arch ours">
+          <h3>Beadline</h3>
+          <span class="who">Bead-and-cord line in a tube</span>
+          <p><b>Bet</b>One push-pull line per joint, 17 lines, all motors in the forearm. Pull carries the grip and the bead column carries the light opening push.</p>
+          <p><b>Status</b>A model only. Every number in the Simulator is an assumption. The closest prior art I found is a hand with linkages and push-pull cables <sup class="c">[8]</sup>, which I did not read.</p>
+          <p><b>Open problem</b>Whether a bead column survives a wrist bend at finger scale, and whether friction stays stable over life. The Test plan isolates each question.</p>
+        </article>
+      </div>
+      <div class="blk">
+        <div class="lab">What the field still lacks</div>
+        <ul class="gaps">
+          <li>Independent cycle-life data. Only Tacta states a figure, and it is the vendor's <sup class="c">[1]</sup>.</li>
+          <li>Friction models that follow accumulated bend. One recent paper on tendon-sheath mechanisms fits friction to an exponential in bend angle, like this simulator, and reports an 88% tracking-error cut from compensating it <sup class="c">[6]</sup>.</li>
+          <li>A standard way to manage slack and pretension <sup class="c">[3]</sup>.</li>
+          <li>Routing geometry that lowers friction. The patent scan calls this white space <sup class="c">[3]</sup>.</li>
+          <li>A fiber muscle that is hand-ready. Nylon-based muscles reach 28.4 MPa isometric stress, far above skeletal muscle, but the review points to arms and grippers as the nearest uses, not hands <sup class="c">[7]</sup>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tabp" id="tab-plan" role="tabpanel" aria-labelledby="t-plan" hidden>
+      <p class="note">Seven independent probes, each with its own pass line and its own fallback, so a failed branch can be dropped without losing the rest. The thresholds are proposals to argue over. The Model line updates from your Assumptions.</p>
+      <div class="blk">
+        <p class="hint" id="plan-sum"></p>
+        <button type="button" class="chip" id="copyplan" style="align-self:flex-start">Copy plan as text</button>
+        <textarea id="planbox" class="ta" readonly hidden aria-label="Test plan as text"></textarea>
+      </div>
+      <div id="plan"></div>
+    </div>
+
+    <div class="tabp" id="tab-kit" role="tabpanel" aria-labelledby="t-kit" hidden>
+      <p class="note">Generates a report and printable parts from the model, sized to your hand. The parts are plain OpenSCAD source that turns into STL files with one command.</p>
+      <div class="blk">
+        <div class="lab">Your hand</div>
+        <label for="k-len">Middle finger length, knuckle to tip (mm)</label>
+        <div class="srow"><input type="number" id="k-len" value="101" min="60" max="130" step="1" inputmode="numeric"><output id="o-klen" for="k-len">scale 1.00</output></div>
+        <label for="k-digit">Finger to build</label>
+        <select id="k-digit"><option value="1">Index</option><option value="2">Middle</option><option value="3">Ring</option><option value="4">Pinky</option></select>
+      </div>
+      <div class="blk">
+        <div class="lab">Hardware</div>
+        <label for="k-tube">Tube outer diameter (mm)</label>
+        <div class="srow"><input type="number" id="k-tube" value="3" min="2" max="6" step="0.1" inputmode="decimal"><output></output></div>
+        <label for="k-pin">Hinge pin diameter (mm)</label>
+        <div class="srow"><input type="number" id="k-pin" value="2" min="1" max="4" step="0.1" inputmode="decimal"><output></output></div>
+        <label for="k-clr">Printer clearance per side (mm)</label>
+        <div class="srow"><input type="number" id="k-clr" value="0.25" min="0.1" max="0.6" step="0.05" inputmode="decimal"><output></output></div>
+      </div>
+      <div class="blk">
+        <div class="lab">Parts for this finger</div>
+        <div class="twrap" id="k-parts"></div>
+        <p class="note" id="k-stroke"></p>
+      </div>
+      <div class="blk">
+        <div class="lab">Get the files</div>
+        <div class="chips">
+          <button type="button" class="chip" id="k-zip">Download full kit (.zip)</button>
+          <button type="button" class="chip" id="k-rep">Download report</button>
+          <button type="button" class="chip" id="k-scad">Copy finger SCAD</button>
+        </div>
+        <p class="note" id="k-note"></p>
+        <textarea id="k-ta" class="ta" readonly hidden aria-label="Generated file text"></textarea>
+        <p class="note">The zip holds the report, the run as CSV, a parts list, three OpenSCAD files (finger rig, bend jigs, tube clamp) and make_stl.sh.</p>
+      </div>
+      <div class="blk">
+        <div class="lab">Print and build</div>
+        <ul class="notes">
+          <li>Install OpenSCAD (version 2019.05 or newer), unzip the kit, and run <code>sh make_stl.sh</code>. STL files land in the out folder.</li>
+          <li>Print in PLA or PETG at 0.2 mm layers with 4 perimeters. Lay each finger part on a side face so the fork plates print flat.</li>
+          <li>Ream the pin holes with a drill of the pin size. Seat two tubes in the base sockets, thread a cord through each, run it through the horn or guide post, and tie off.</li>
+          <li>Drive each cord with a small linear actuator and read force with a load cell at the actuator. Use the bend jigs for tests P2 and P4 and the clamp for P1.</li>
+          <li>I have not test-printed these parts or rendered them in OpenSCAD. Check clearances on your printer and expect to adjust.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tabp" id="tab-src" role="tabpanel" aria-labelledby="t-src" hidden>
+      <ol class="srcs">
+        <li><a href="https://www.therobotreport.com/tacta-systems-takes-aim-high-skilled-manufacturing-work-tactabot/" target="_blank" rel="noopener">The Robot Report: Tacta Systems and TactaBot</a><small>Fingertip force, cycle life, sensing range, shipping date.</small></li>
+        <li><a href="https://www.humanoidsdaily.com/features/the-great-dexterity-divide-why-robotics-leaders-are-warring-over-tendon-vs-direct-drive-hands" target="_blank" rel="noopener">Humanoids Daily: The Great Dexterity Divide</a><small>The two camps, friction and heat arguments, Optimus Gen 3 actuator count.</small></li>
+        <li><a href="https://www.patsnap.com/resources/blog/articles/tendon-driven-robot-hand-patents-2026-landscape/" target="_blank" rel="noopener">PatSnap: Tendon-Driven Robot Hand Technology Landscape 2026</a><small>Patent themes, slack management, friction and routing geometry.</small></li>
+        <li><a href="https://humanoid.guide/product/wuji-hand-two/" target="_blank" rel="noopener">Humanoid.guide: Wuji Hand 2</a><small>DOF, weight, payload, price, availability.</small></li>
+        <li><a href="https://humanoid.guide/product/allonic-hand-mk2/" target="_blank" rel="noopener">Humanoid.guide: Allonic Hand MK2</a><small>DOF, weight, strength, price, funding, stage.</small></li>
+        <li><a href="https://arxiv.org/html/2605.16870" target="_blank" rel="noopener">arXiv 2605.16870: Self-Sensing Tendon Loop</a><small>Friction versus accumulated bend, in-place identification, tracking-error reduction. Tested on tendon-sheath mechanisms, not hands.</small></li>
+        <li><a href="https://www.nature.com/articles/s44182-025-00059-8" target="_blank" rel="noopener">npj Robotics: Fiber-type artificial muscles for robotic actuation</a><small>Stress and strain figures, nearest applications.</small></li>
+        <li><a href="https://ieeexplore.ieee.org/document/8868820/" target="_blank" rel="noopener">IEEE: Robot hand design with linkage and push-pull cable transmission</a><small>Closest prior art found. I saw the title only and did not read the paper.</small></li>
+        <li>The podcast transcript you supplied (Robothands.pdf)<small>Tendon counts, Wuji and Sharpa designs, Daxo, Allonic, touch sensing rates, scale argument.</small></li>
+        <li><a href="https://humanoid.guide/tesla-and-figure-choices-sharpen-humanoid-hand-design-debate/" target="_blank" rel="noopener">Humanoid.guide: Tesla and Figure sharpen the hand design debate</a><small>Only the headline contrast and the 15-joints-on-5-motors example.</small></li>
+      </ol>
+      <p class="note">Model inputs with no source: moment arms, joint ranges, finger lengths, the 0.95 rad routing bend, pull and push friction, push limit, and cord break load. They are rounded estimates for you to replace.</p>
+    </div>
   </section>
 </div>
 
@@ -253,6 +457,7 @@ for (let d = 1; d <= 4; d++) {
 }
 const wrist = { cur: 0, tgt: 0 };
 const P = { F: 6, ratio: 0.2, mu: 0.10, cord: 300, push: 20, pushMu: 1.6, grip: true };
+let HS = 1;
 
 function stateOf(m) {
   if (m.eng < 0.02) return 'idle';
@@ -267,7 +472,7 @@ function metrics() {
   const mu = P.grip ? P.mu : P.mu * P.pushMu;
   const lim = P.grip ? P.cord : P.push;
   return lines.map((L) => {
-    const th = L.cur * D2R, stroke = L.arm * th;
+    const th = L.cur * D2R, stroke = L.arm * HS * th;
     const bend = 0.95 + w + (L.cross >= 0 ? Math.max(0, lines[L.cross].cur) * D2R : 0);
     const eng = clamp(Math.abs(L.cur) / L.eng, 0, 1);
     const fo = (P.grip ? P.F : P.F * P.ratio) * L.lf * (L.lever / L.arm) * eng;
@@ -728,9 +933,479 @@ function frame(now) {
     if (gl) { applyPose(); updateLines(); needRender = true; }
     dirtyLines = false; needUI = true;
   }
-  if (needUI && now - lastUI > 50) { renderUI(); lastUI = now; needUI = false; }
+  if (needUI && now - lastUI > 50) {
+    renderUI(); lastUI = now; needUI = false;
+    if (activeTab === 'env') renderEnv(); else if (activeTab === 'plan') renderPlan();
+  }
   if (gl && needRender) { placeCam(); renderer.render(scene, camera); needRender = false; }
 }
+
+/* ---------- research tabs ---------- */
+let activeTab = 'sim';
+const TABS = ['sim', 'env', 'field', 'plan', 'kit', 'src'];
+function setTab(n) {
+  activeTab = n;
+  TABS.forEach((t) => { $('tab-' + t).hidden = t !== n; $('t-' + t).setAttribute('aria-selected', t === n ? 'true' : 'false'); });
+  if (n === 'env') renderEnv();
+  if (n === 'plan') renderPlan();
+  if (n === 'kit') renderKit();
+}
+document.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => setTab(b.dataset.tab)));
+document.querySelector('.tabs').addEventListener('keydown', (e) => {
+  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+  const i = TABS.indexOf(activeTab), n = TABS[(i + (e.key === 'ArrowRight' ? 1 : TABS.length - 1)) % TABS.length];
+  setTab(n); $('t-' + n).focus();
+});
+document.querySelectorAll('[data-force]').forEach((b) => b.addEventListener('click', () => {
+  const i = $('p-F'); i.value = b.dataset.force; i.dispatchEvent(new Event('input'));
+}));
+
+function copyText(text, btn, ta) {
+  const done = () => { const o = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = o; }, 1400); };
+  const fallback = () => { ta.value = text; ta.hidden = false; ta.focus(); ta.select(); };
+  try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+}
+function runCsv() {
+  const r = ['# Beadline Hand run', 'wrist_deg,' + Math.round(wrist.cur), 'mode,' + (P.grip ? 'grip_pull' : 'release_push'),
+    'fingertip_force_N,' + P.F, 'opening_ratio,' + P.ratio, 'friction_per_rad,' + P.mu, 'push_friction_multiplier,' + P.pushMu,
+    'cord_limit_N,' + P.cord, 'push_limit_N,' + P.push, '',
+    'digit,line,angle_deg,stroke_mm,bend_rad,loss_pct,finger_N,motor_N,share_of_limit,state'];
+  lines.forEach((L, i) => {
+    const m = M[i];
+    r.push([DN[L.d], L.label, L.cur.toFixed(1), m.stroke.toFixed(2), m.bend.toFixed(2), (m.loss * 100).toFixed(1), m.fo.toFixed(1), m.tm.toFixed(1), m.util.toFixed(2), stateOf(m)].join(','));
+  });
+  return r.join('\n');
+}
+$('copyrun').addEventListener('click', () => copyText(runCsv(), $('copyrun'), $('csv')));
+
+/* envelope: load against bend for one line */
+const envSel = $('env-line');
+lines.forEach((L) => { const o = document.createElement('option'); o.value = L.i; o.textContent = DN[L.d] + ' · ' + L.label; envSel.appendChild(o); });
+envSel.value = '5';
+envSel.addEventListener('change', renderEnv);
+const EW = 360, EH = 220, ML = 40, MR = 44, MT = 12, MB = 34, XMAX = 4, YMAX = 2.2;
+const ex = (t) => ML + t / XMAX * (EW - ML - MR);
+const ey = (u) => MT + (1 - Math.min(u, YMAX) / YMAX) * (EH - MT - MB);
+const pc = (v) => Math.round(v * 100) + '%';
+const atTxt = (c) => (c === Infinity ? 'never' : (c <= 0 ? 'at any bend' : 'at ' + c.toFixed(1) + ' rad of bend'));
+
+function renderEnv() {
+  const L = lines[+envSel.value], m = M[L.i];
+  const R = L.lever / L.arm * L.lf, Th = P.F * R, Ph = P.F * P.ratio * R, mp = P.mu * P.pushMu;
+  const up = (t) => Th * Math.exp(P.mu * t) / P.cord, uq = (t) => Ph * Math.exp(mp * t) / P.push;
+  const crit = (h, lim, mu) => (h <= 0 ? Infinity : (lim > h ? Math.log(lim / h) / mu : 0));
+  const cp = crit(Th, P.cord, P.mu), cq = crit(Ph, P.push, mp);
+  $('env-read').textContent = DN[L.d] + ' · ' + L.label + '. At ' + P.F + ' N at the fingertip, the finger end carries ' + Math.round(Th) +
+    ' N in pull and ' + Math.round(Ph) + ' N in push. Pull reaches the ' + P.cord + ' N cord limit ' + atTxt(cp) + '. Push reaches the ' + P.push +
+    ' N column limit ' + atTxt(cq) + '. This line bends ' + m.bend.toFixed(1) + ' rad in the current pose.';
+  const path = (f) => {
+    let d = '';
+    for (let i = 0; i <= 80; i++) { const t = i * XMAX / 80, u = f(t); d += (i ? 'L' : 'M') + ex(t).toFixed(1) + ' ' + ey(u).toFixed(1) + ' '; if (u > YMAX) break; }
+    return d;
+  };
+  let g = '';
+  [0, 0.5, 1, 1.5, 2].forEach((u) => {
+    g += '<line x1="' + ML + '" x2="' + (EW - MR) + '" y1="' + ey(u) + '" y2="' + ey(u) + '" stroke="var(--line)" stroke-width="1"/>' +
+      '<text class="tk" x="' + (ML - 6) + '" y="' + (ey(u) + 3) + '" text-anchor="end">' + Math.round(u * 100) + '%</text>';
+  });
+  [0, 1, 2, 3, 4].forEach((t) => { g += '<text class="tk" x="' + ex(t) + '" y="' + (EH - MB + 14) + '" text-anchor="middle">' + t + '</text>'; });
+  g += '<text class="tk" x="' + ((ML + EW - MR) / 2) + '" y="' + (EH - 4) + '" text-anchor="middle">Total bend in the tube (rad)</text>';
+  const failTop = ey(YMAX), failBot = ey(1);
+  g += '<rect x="' + ML + '" y="' + failTop + '" width="' + (EW - MR - ML) + '" height="' + (failBot - failTop) + '" fill="var(--over)" opacity="0.08"/>' +
+    '<line x1="' + ML + '" x2="' + (EW - MR) + '" y1="' + failBot + '" y2="' + failBot + '" stroke="var(--ink)" stroke-width="1" stroke-dasharray="4 3"/>' +
+    '<text class="tk" x="' + (ML + 4) + '" y="' + (failBot - 4) + '">limit</text>';
+  g += '<path d="' + path(up) + '" fill="none" stroke="var(--pull)" stroke-width="2" stroke-linecap="round"/>' +
+    '<path d="' + path(uq) + '" fill="none" stroke="var(--push)" stroke-width="2" stroke-linecap="round"/>';
+  const endP = ey(up(XMAX)), endQ = ey(uq(XMAX));
+  let lp = endP, lq = endQ; if (Math.abs(lp - lq) < 13) { if (lp <= lq) lq = lp + 13; else lp = lq + 13; }
+  g += '<text class="tl" x="' + (EW - MR + 5) + '" y="' + (lp + 4) + '">Pull</text><text class="tl" x="' + (EW - MR + 5) + '" y="' + (lq + 4) + '">Push</text>';
+  [[cp, up, 'pull'], [cq, uq, 'push']].forEach((c) => {
+    if (c[0] > 0 && c[0] < XMAX) g += '<circle cx="' + ex(c[0]) + '" cy="' + failBot + '" r="4" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>';
+  });
+  if (m.bend <= XMAX) {
+    g += '<circle cx="' + ex(m.bend) + '" cy="' + ey(up(m.bend)) + '" r="4" fill="var(--pull)" stroke="var(--panel)" stroke-width="2"/>' +
+      '<circle cx="' + ex(m.bend) + '" cy="' + ey(uq(m.bend)) + '" r="4" fill="var(--push)" stroke="var(--panel)" stroke-width="2"/>';
+  }
+  g += '<line id="env-vl" x1="0" x2="0" y1="' + MT + '" y2="' + (EH - MB) + '" stroke="var(--ink)" stroke-width="1" opacity="0"/>' +
+    '<rect id="env-hit" x="' + ML + '" y="' + MT + '" width="' + (EW - MR - ML) + '" height="' + (EH - MT - MB) + '" fill="transparent"/>';
+  const chart = $('env-chart');
+  chart.innerHTML = '<svg viewBox="0 0 ' + EW + ' ' + EH + '" role="img" aria-label="Load as a share of limit against total tube bend, for pull and push">' + g + '</svg><div class="tip" hidden></div>';
+  const svg = chart.querySelector('svg'), vl = svg.querySelector('#env-vl'), tip = chart.querySelector('.tip');
+  const show = (e) => {
+    const r = svg.getBoundingClientRect();
+    const vx = (e.clientX - r.left) / r.width * EW;
+    const t = clamp((vx - ML) / (EW - ML - MR) * XMAX, 0, XMAX);
+    vl.setAttribute('x1', ex(t)); vl.setAttribute('x2', ex(t)); vl.setAttribute('opacity', '0.5');
+    tip.hidden = false;
+    tip.textContent = t.toFixed(1) + ' rad · pull ' + pc(up(t)) + ' · push ' + pc(uq(t));
+    tip.style.left = clamp(ex(t) / EW * r.width, 70, r.width - 70) + 'px';
+    tip.style.top = (ey(Math.max(up(t), uq(t))) / EH * r.height - 8) + 'px';
+  };
+  const hide = () => { vl.setAttribute('opacity', '0'); tip.hidden = true; };
+  svg.addEventListener('pointermove', show); svg.addEventListener('pointerdown', show);
+  svg.addEventListener('pointerleave', hide); svg.addEventListener('pointerup', (e) => { if (e.pointerType === 'touch') hide(); });
+
+  const table = (kind) => {
+    const mus = [0.05, 0.10, 0.15, 0.20, 0.30], ths = [1, 2, 2.5, 3];
+    const need = kind === 'pull' ? P.F : P.F * P.ratio, lim = kind === 'pull' ? P.cord : P.push, k = kind === 'pull' ? 1 : P.pushMu;
+    let h = '<table class="num"><thead><tr><th>Friction</th>' + ths.map((t) => '<th>' + t.toFixed(1) + ' rad</th>').join('') + '</tr></thead><tbody>';
+    mus.forEach((mu) => {
+      h += '<tr><td>' + mu.toFixed(2) + '</td>' + ths.map((t) => {
+        const v = lim / (R * Math.exp(mu * k * t));
+        return '<td class="' + (v >= need ? '' : 'bad') + '">' + (v < 10 ? v.toFixed(1) : Math.round(v)) + '</td>';
+      }).join('') + '</tr>';
+    });
+    return h + '</tbody></table>';
+  };
+  $('tb-pull').innerHTML = table('pull'); $('tb-push').innerHTML = table('push');
+  $('tb-note').textContent = 'Needed: ' + P.F + ' N grip and ' + (P.F * P.ratio).toFixed(1) + ' N opening. Red cells fall short. Rows are friction per radian of bend; push uses ' + P.pushMu + ' times as much.';
+}
+
+/* test plan */
+const cite = (n) => '<sup class="c">[' + n + ']</sup>';
+const PLAN = [
+  { id: 'p1', t: 'Bead column push limit', q: 'How much push does a straight line carry before the bead column bows inside its tube?',
+    m: 'Put a 300 mm line in a 3 mm tube with 1 mm beads. Push with a linear stage against a load cell and log the force at the first visible bow. Repeat with three tube clearances.',
+    pass: 'Holds the push limit from Assumptions with 1.5 times margin.',
+    fail: 'Give that joint a pretensioned two-line loop that only pulls. Keep beads for joints that need light pushes.',
+    pred: () => 'target at least ' + (P.push * 1.5).toFixed(0) + ' N (limit now ' + P.push + ' N)' },
+  { id: 'p2', t: 'Friction against bend', q: 'Does tension follow the exponential curve, and what friction do pull and push really have?',
+    m: 'Same rig. Bend the tube through 0.5 to 3.0 rad in steps. Log force in and force out on slow cycles in both directions. Fit friction for pull and for push.',
+    pass: 'Pull friction at or below 0.15 and push friction at or below 0.25 across the range.',
+    fail: 'Try a lower-friction liner or coated beads. If push friction stays high, shorten the tubes or use rigid links through the palm.',
+    pred: () => 'force kept at 1 / 2 / 3 rad: pull ' + pc(Math.exp(-P.mu)) + ' / ' + pc(Math.exp(-2 * P.mu)) + ' / ' + pc(Math.exp(-3 * P.mu)) +
+      ', push ' + pc(Math.exp(-P.mu * P.pushMu)) + ' / ' + pc(Math.exp(-2 * P.mu * P.pushMu)) + ' / ' + pc(Math.exp(-3 * P.mu * P.pushMu)) },
+  { id: 'p3', t: 'Backlash and hysteresis', q: 'How far does the joint lag the motor when the line reverses?',
+    m: 'Sweep the stroke through its full range and back at low speed. Read motor position and an angle sensor on the joint. Plot the loop.',
+    pass: 'Backlash at or below 0.3 mm of line travel and loop width at or below 5% of range.',
+    fail: 'Add angle sensors at the joints and compensate in control, or add a friction-identifying loop (P6).',
+    pred: () => '0.3 mm is about ' + (0.3 / 8 * 57.3).toFixed(1) + '° at an 8 mm arm and ' + (0.3 / 6 * 57.3).toFixed(1) + '° at a 6 mm arm' },
+  { id: 'p4', t: 'Wrist sweep', q: 'How much friction does a wrist bend add?',
+    m: 'Hold the line at 20% load and sweep the wrist tubes from minus 60 to plus 60 degrees. Log force loss at each angle.',
+    pass: 'Added loss at 60 degrees stays at or below 10 points.',
+    fail: 'Use larger guide radii at the wrist, or split the bundle into two paths.',
+    pred: () => 'model adds ' + Math.round((1 - Math.exp(-P.mu * Math.PI / 3)) * 100) + ' points for pull and ' + Math.round((1 - Math.exp(-P.mu * P.pushMu * Math.PI / 3)) * 100) + ' for push at 60°' },
+  { id: 'p5', t: 'Cycle life', q: 'Does friction stay put, and does anything wear out?',
+    m: 'Run 100,000 cycles at 100 N pull and 20 N push through at least 2.5 rad of bend. Log friction every 1,000 cycles. Inspect cord and beads. Then run to 1 million.',
+    pass: 'Friction drift at or below 20% and no fraying or bead cracking at 100,000 cycles.',
+    fail: 'Change the cord or the bead material, and record the failure mode before changing anything else.',
+    pred: () => 'compare at the end: Tacta reports up to 30 million cycles for its mechanism ' + cite(1) },
+  { id: 'p6', t: 'Self-sensing loop', q: 'Can friction be measured in place, without sensors at the finger?',
+    m: 'Add a return cord through the same tube so both its ends sit at the motor. Probe with a short move, read input and output tension, and predict the line tension.',
+    pass: 'Predicted tension within 10% of a load cell at the finger.',
+    fail: 'Fall back to a joint angle sensor on each line.',
+    pred: () => 'a recent paper reports an 88% tracking-error cut with this idea, on tendon-sheath rigs and not hands ' + cite(6) },
+  { id: 'p7', t: 'One finger, closed loop', q: 'Can one finger hold a force with only three lines?',
+    m: 'Build the index finger with three lines and angle sensors at each joint. Command fingertip force from 0 to 10 N and log the error.',
+    pass: 'Force error at or below 1 N RMS and no oscillation.',
+    fail: 'Check friction compensation (P2, P3, P6) before changing the mechanism.',
+    pred: () => { const L = lines[5], R = L.lever / L.arm * L.lf; return '10 N at the fingertip needs about ' + Math.round(10 * R * Math.exp(P.mu * 0.95)) + ' N at the knuckle motor'; } }
+];
+let planSt = {};
+try { planSt = JSON.parse(localStorage.getItem('bh-plan') || '{}') || {}; } catch (e) { planSt = {}; }
+function savePlan() { try { localStorage.setItem('bh-plan', JSON.stringify(planSt)); } catch (e) {} }
+const STAT = ['Untested', 'Pass', 'Fail'];
+function buildPlan() {
+  $('plan').innerHTML = PLAN.map((t) =>
+    '<article class="test"><div class="thead"><h3>' + t.id.toUpperCase() + '. ' + t.t + '</h3>' +
+    '<select id="st-' + t.id + '" aria-label="Status of ' + t.t + '"><option value="0">Untested</option><option value="1">Pass</option><option value="2">Fail</option></select></div>' +
+    '<p><b>Question</b>' + t.q + '</p><p><b>Method</b>' + t.m + '</p><p><b>Pass line</b>' + t.pass + '</p><p><b>If it fails</b>' + t.fail + '</p>' +
+    '<p class="pred" id="pr-' + t.id + '"></p></article>').join('');
+  PLAN.forEach((t) => {
+    const s = $('st-' + t.id); s.value = planSt[t.id] || '0';
+    s.addEventListener('change', () => { planSt[t.id] = s.value; savePlan(); renderPlan(); });
+  });
+}
+function planText() {
+  return 'Beadline test plan\n' + PLAN.map((t) => t.id.toUpperCase() + ' ' + t.t + ' [' + STAT[+(planSt[t.id] || 0)] + ']\n  Pass: ' + t.pass + '\n  If it fails: ' + t.fail).join('\n');
+}
+function renderPlan() {
+  PLAN.forEach((t) => { $('pr-' + t.id).innerHTML = '<b>Model says</b>' + t.pred(); });
+  const c = [0, 0, 0]; PLAN.forEach((t) => { c[+(planSt[t.id] || 0)]++; });
+  $('plan-sum').textContent = c[1] + ' pass · ' + c[2] + ' fail · ' + c[0] + ' untested';
+}
+$('copyplan').addEventListener('click', () => copyText(planText(), $('copyplan'), $('planbox')));
+
+/* ---------- build kit: report, OpenSCAD parts, zip ---------- */
+const kEl = { len: $('k-len'), digit: $('k-digit'), tube: $('k-tube'), pin: $('k-pin'), clr: $('k-clr') };
+const inViewer = typeof window.claude !== 'undefined';
+const SRC = [
+  ['The Robot Report: Tacta Systems and TactaBot', 'https://www.therobotreport.com/tacta-systems-takes-aim-high-skilled-manufacturing-work-tactabot/'],
+  ['Humanoids Daily: The Great Dexterity Divide', 'https://www.humanoidsdaily.com/features/the-great-dexterity-divide-why-robotics-leaders-are-warring-over-tendon-vs-direct-drive-hands'],
+  ['PatSnap: Tendon-Driven Robot Hand Technology Landscape 2026', 'https://www.patsnap.com/resources/blog/articles/tendon-driven-robot-hand-patents-2026-landscape/'],
+  ['Humanoid.guide: Wuji Hand 2', 'https://humanoid.guide/product/wuji-hand-two/'],
+  ['Humanoid.guide: Allonic Hand MK2', 'https://humanoid.guide/product/allonic-hand-mk2/'],
+  ['arXiv 2605.16870: Self-Sensing Tendon Loop', 'https://arxiv.org/html/2605.16870'],
+  ['npj Robotics: Fiber-type artificial muscles for robotic actuation', 'https://www.nature.com/articles/s44182-025-00059-8'],
+  ['IEEE: Robot hand design with linkage and push-pull cable transmission (title only)', 'https://ieeexplore.ieee.org/document/8868820/']
+];
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const fmtC = (c) => (c === Infinity ? 'never' : (c <= 0 ? 'any bend' : c.toFixed(1) + ' rad'));
+function critOf(L) {
+  const R = L.lever / L.arm * L.lf, Th = P.F * R, Ph = P.F * P.ratio * R;
+  const c = (h, lim, mu) => (h <= 0 ? Infinity : (lim > h ? Math.log(lim / h) / mu : 0));
+  return { cp: c(Th, P.cord, P.mu), cq: c(Ph, P.push, P.mu * P.pushMu) };
+}
+function kitParams() {
+  const d = +kEl.digit.value, f = FING[d], s = HS, r = f.r * 10 * s;
+  return { d, digit: DN[d], L0: +(f.L[0] * 10 * s).toFixed(1), Lm: +((f.L[1] + f.L[2]) * 10 * s).toFixed(1),
+    W: +(1.6 * r).toFixed(1), T: +(1.2 * r).toFixed(1), armK: +(8 * s).toFixed(1), armP: +(6 * s).toFixed(1),
+    pinD: +kEl.pin.value || 2, c: +kEl.clr.value || 0.25, tubeD: +kEl.tube.value || 3, cordHole: 1.2, pl: 2.4 };
+}
+
+function fingerScad(p) {
+  return `// Beadline finger rig, ${p.digit}. Units mm. Y runs along the finger, X across it (pin axis), Z is the palm side.
+// Middle segment and fingertip are printed as one piece. Change "part" or let make_stl.sh set it.
+part = "all";   // "base", "prox", "mid" or "all" (assembled, open)
+L0 = ${p.L0};   // proximal segment, knuckle pin to middle pin
+Lm = ${p.Lm};   // middle segment plus fingertip, middle pin to tip
+W = ${p.W}; T = ${p.T};
+armK = ${p.armK};   // moment arm of the knuckle line
+armP = ${p.armP};   // moment arm of the middle-joint line
+pinD = ${p.pinD}; clr = ${p.c};
+tubeD = ${p.tubeD}; cordHole = ${p.cordHole};
+pl = ${p.pl};       // fork plate thickness
+tl = 10; fl = 12;   // tongue and fork lengths
+xk = -2.5; xp = 2.5;   // cord lanes for the knuckle line and the middle-joint line
+$fn = 40;
+
+module pinhole(y) {
+  translate([0, y, 0]) rotate([0, 90, 0]) cylinder(d = pinD + 0.2, h = W + 2, center = true);
+}
+
+module fork(y) {
+  for (sx = [-1, 1]) translate([sx * (W/2 - pl/2), 0, 0]) {
+    translate([-pl/2, y - fl, -T/2]) cube([pl, fl, T]);
+    translate([0, y, 0]) rotate([0, 90, 0]) cylinder(d = T, h = pl, center = true);
+  }
+}
+
+module tongue() {
+  tw = W - 2*pl - 2*clr;
+  translate([-tw/2, 0, -T/2]) cube([tw, tl, T]);
+  rotate([0, 90, 0]) cylinder(d = T, h = tw, center = true);
+}
+
+module seg(Ls, xh, arm, isProx) {
+  difference() {
+    union() {
+      tongue();
+      translate([-W/2, tl, -T/2]) cube([W, Ls - tl - (isProx ? fl : 0), T]);
+      if (isProx) fork(Ls);
+      else translate([0, Ls, 0]) rotate([0, 90, 0]) cylinder(d = T, h = W, center = true);
+      // horn: the cord ties here, "arm" above the pin axis
+      translate([xh - 2, 3, T/2 - 0.01]) cube([4, 6, arm - T/2 + 2.01]);
+      // guide post: carries the middle-joint cord over the proximal segment
+      if (isProx) translate([xp - 2, Ls - fl - 10, T/2 - 0.01]) cube([4, 4, armP - T/2 + 2.51]);
+    }
+    pinhole(0);
+    if (isProx) pinhole(Ls);
+    translate([xh, -T, arm]) rotate([-90, 0, 0]) cylinder(d = cordHole, h = T + 10);
+    if (isProx) translate([xp, Ls - fl - 12, armP]) rotate([-90, 0, 0]) cylinder(d = cordHole, h = 16);
+  }
+}
+
+module base() {
+  bl = 40;
+  union() {
+    difference() {
+      union() {
+        translate([-W/2, -bl, -T/2]) cube([W, bl - fl, max(armK, armP) + 3.5 + T/2]);
+        fork(0);
+      }
+      pinhole(0);
+      translate([xk, -bl - 1, armK]) rotate([-90, 0, 0]) cylinder(d = tubeD + 0.2, h = bl - fl + 2);
+      translate([xp, -bl - 1, armP]) rotate([-90, 0, 0]) cylinder(d = tubeD + 0.2, h = bl - fl + 2);
+    }
+    // mounting wings with M3 holes
+    for (sx = [-1, 1]) difference() {
+      translate([sx > 0 ? W/2 - 1 : -W/2 - 9, -bl, -T/2]) cube([10, 16, 4]);
+      translate([sx * (W/2 + 4.5), -bl + 8, -T/2 - 1]) cylinder(d = 3.4, h = 6);
+    }
+  }
+}
+
+if (part == "base" || part == "all") base();
+if (part == "prox" || part == "all") seg(L0, xk, armK, true);
+if (part == "mid") seg(Lm, xp, armP, false);
+if (part == "all") translate([0, L0, 0]) seg(Lm, xp, armP, false);
+`;
+}
+function bendScad(p) {
+  return `// Bend jig: holds a tube through a fixed total bend, for tests P2 and P4. Units mm.
+R = 25;        // centerline bend radius, keep it above the tube's minimum bend radius
+theta = 1.5;   // total bend in radians, make_stl.sh prints 0.5 to 3.0
+tubeD = ${p.tubeD};
+th = 8; pad = 14; depth = tubeD * 0.6; gw = tubeD + 0.3; lead = 30; $fn = 72;
+deg = theta * 180 / PI;
+
+module leg() {
+  difference() {
+    translate([R - pad, 0, 0]) cube([2 * pad, lead, th]);
+    translate([R - gw/2, -1, th - depth]) cube([gw, lead + 2, depth + 1]);
+  }
+}
+
+union() {
+  difference() {
+    rotate_extrude(angle = deg) translate([R - pad, 0]) square([2 * pad, th]);
+    rotate_extrude(angle = deg) translate([R - gw/2, th - depth]) square([gw, depth + 1]);
+  }
+  translate([0, -lead, 0]) leg();
+  rotate([0, 0, deg]) leg();
+}
+`;
+}
+function clampScad(p) {
+  return `// Split clamp for a straight tube, for the push test (P1). Print two halves. Units mm.
+tubeD = ${p.tubeD}; w = 16; l = 20; h = 14; screw = 3.4; $fn = 48;
+
+module half() {
+  difference() {
+    translate([-w/2, 0, 0]) cube([w, l, h/2]);
+    translate([0, -1, h/2]) rotate([-90, 0, 0]) cylinder(d = tubeD + 0.1, h = l + 2);
+    for (sx = [-1, 1]) translate([sx * (w/2 - 3.5), l/2, -1]) cylinder(d = screw, h = h);
+  }
+}
+
+half();
+translate([w + 6, 0, 0]) half();
+`;
+}
+function makeSh() {
+  return `#!/bin/sh
+# Builds STL files from the OpenSCAD sources. Needs OpenSCAD 2019.05 or newer.
+set -e
+OS=$(command -v openscad || echo /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD)
+mkdir -p out
+for p in base prox mid; do
+  "$OS" -D "part=\\"$p\\"" -o "out/finger_$p.stl" finger_rig.scad
+done
+for t in 0.5 1.0 1.5 2.0 2.5 3.0; do
+  "$OS" -D "theta=$t" -o "out/bend_jig_$t.stl" bend_jig.scad
+done
+"$OS" -o out/tube_clamp.stl tube_clamp.scad
+echo "Done. STL files are in the out folder."
+`;
+}
+function bomCsv(p) {
+  const sK = Math.ceil(p.armK * Math.PI / 2 * 1.25), sP = Math.ceil(p.armP * 110 * D2R * 1.25);
+  const rows = [
+    ['item', 'qty', 'spec', 'note'],
+    ['Linear actuator', 2, 'stroke at least ' + sK + ' mm (knuckle) and ' + sP + ' mm (middle joint), pull at least ' + P.cord * 0.5 + ' N', 'suggested, unverified'],
+    ['PTFE-lined tube', 2, 'outer diameter ' + p.tubeD + ' mm, about 400 mm each', 'suggested, unverified'],
+    ['Bead or ball chain', 2, '1.0 to 1.5 mm balls that fit the tube bore, about 400 mm each', 'sourcing is the hard part'],
+    ['Dyneema cord', 2, '0.5 mm, about 500 mm each', 'suggested, unverified'],
+    ['Steel pin', 2, p.pinD + ' mm diameter, ' + (p.W + 2) + ' mm long', 'suggested'],
+    ['Load cell', 1, 'tension and compression, 50 N range', 'for tests P1 and P2'],
+    ['Magnetic angle sensor', 2, 'one per joint, magnet on the pin', 'for tests P3 and P7'],
+    ['M3 screws', 4, 'base mounting and tube clamp', 'suggested']
+  ];
+  return rows.map((r) => r.map((c) => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n') + '\n';
+}
+function readme(p) {
+  return 'Beadline kit, ' + p.digit + ' finger at scale ' + HS.toFixed(2) + '\n' + new Date().toISOString().slice(0, 10) + '\n\n' +
+    'report.html      Open in a browser. Print to PDF from there.\n' +
+    'run.csv          The pose and loads you had on screen.\n' +
+    'bom.csv          Suggested parts list. Unverified.\n' +
+    'finger_rig.scad  Base block, proximal segment, middle segment with fingertip.\n' +
+    'bend_jig.scad    Tube bend jig. make_stl.sh prints six angles.\n' +
+    'tube_clamp.scad  Split clamp for the push test.\n' +
+    'make_stl.sh      Run with: sh make_stl.sh (needs OpenSCAD 2019.05 or newer).\n\n' +
+    'These parts have not been test-printed or rendered by the author. Check clearances on your printer.\n';
+}
+function reportHtml(p) {
+  const tr = (cells) => '<tr>' + cells.map((c) => '<td>' + c + '</td>').join('') + '</tr>';
+  const th = (cells) => '<tr>' + cells.map((c) => '<th>' + c + '</th>').join('') + '</tr>';
+  const tmp = document.createElement('div');
+  const predText = (t) => { tmp.innerHTML = t.pred(); return tmp.textContent; };
+  const assump = [['Mode', P.grip ? 'Grip (pull)' : 'Release (push)'], ['Fingertip force', P.F + ' N'], ['Opening force share', Math.round(P.ratio * 100) + '%'],
+    ['Friction per radian of bend', P.mu], ['Push friction multiplier', P.pushMu], ['Cord break load', P.cord + ' N'], ['Bead column push limit', P.push + ' N'],
+    ['Wrist bend', Math.round(wrist.cur) + ' deg'], ['Hand scale', HS.toFixed(2) + ' (middle finger ' + kEl.len.value + ' mm)']];
+  const runRows = lines.map((L, i) => {
+    const m = M[i], c = critOf(L);
+    return tr([esc(DN[L.d] + ' · ' + L.label), Math.round(L.cur) + '°', m.stroke.toFixed(1), m.bend.toFixed(2), Math.round(m.loss * 100) + '%',
+      Math.round(m.tm), pc(m.util), STATE_TXT[stateOf(m)], fmtC(c.cp), fmtC(c.cq)]);
+  }).join('');
+  const planRows = PLAN.map((t) => tr([t.id.toUpperCase() + ' ' + esc(t.t), STAT[+(planSt[t.id] || 0)], esc(t.pass), esc(predText(t))])).join('');
+  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Beadline Hand report</title><style>' +
+    'body{font:14px/1.5 system-ui,sans-serif;max-width:900px;margin:32px auto;padding:0 16px;color:#13242B}h1{font-size:26px;margin:0}h2{font-size:16px;margin:28px 0 8px}' +
+    'table{border-collapse:collapse;width:100%;font-size:12px}th,td{border-bottom:1px solid #C3CFD4;padding:5px 7px;text-align:right}th:first-child,td:first-child{text-align:left}' +
+    '.w{overflow-x:auto}p,li{max-width:70ch}small{color:#52666F}@media print{body{margin:0}}</style></head><body>' +
+    '<h1>Beadline Hand report</h1><small>' + new Date().toISOString().slice(0, 10) + ' · ' + esc(p.digit) + ' finger rig at scale ' + HS.toFixed(2) + '</small>' +
+    '<h2>Assumptions</h2><div class="w"><table>' + assump.map((r) => tr(r.map(esc))).join('') + '</table></div>' +
+    '<h2>Pose and loads</h2><div class="w"><table>' + th(['Line', 'Angle', 'Stroke mm', 'Bend rad', 'Loss', 'Motor N', 'Share of limit', 'State', 'Pull fails at', 'Push fails at']) + runRows + '</table></div>' +
+    '<p><small>Motor N is finger tension times e to the power (friction times total bend). The last two columns give the bend at which each line would pass its limit at this fingertip force, assuming the line is fully engaged.</small></p>' +
+    '<h2>Finger rig dimensions (mm)</h2><div class="w"><table>' + th(['Part', 'Length', 'Width', 'Thickness']) +
+    tr(['Proximal segment', p.L0, p.W, p.T]) + tr(['Middle segment and tip', p.Lm, p.W, p.T]) + '</table></div>' +
+    '<p>Moment arms: knuckle line ' + p.armK + ' mm, middle-joint line ' + p.armP + ' mm. Tube ' + p.tubeD + ' mm, pin ' + p.pinD + ' mm, clearance ' + p.c + ' mm per side.</p>' +
+    '<h2>Test plan</h2><div class="w"><table>' + th(['Test', 'Status', 'Pass line', 'Model says']) + planRows + '</table></div>' +
+    '<h2>Sources</h2><ol>' + SRC.map((s) => '<li><a href="' + s[1] + '">' + esc(s[0]) + '</a></li>').join('') + '</ol>' +
+    '<p><small>Vendor figures are as reported and were not verified. Moment arms, joint ranges, finger lengths, friction, push limit and cord strength are rounded estimates. The printable parts have not been test-printed.</small></p>' +
+    '</body></html>';
+}
+
+function crc32(u8) {
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < u8.length; i++) { c ^= u8[i]; for (let k = 0; k < 8; k++) c = (c >>> 1) ^ (0xEDB88320 & -(c & 1)); }
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function makeZip(files) {
+  const enc = new TextEncoder(), parts = [], cen = []; let off = 0;
+  files.forEach((f) => {
+    const name = enc.encode(f.name), data = enc.encode(f.text), crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+    lh.setUint16(10, 0, true); lh.setUint16(12, 0x21, true); lh.setUint32(14, crc, true); lh.setUint32(18, data.length, true);
+    lh.setUint32(22, data.length, true); lh.setUint16(26, name.length, true); lh.setUint16(28, 0, true);
+    parts.push(new Uint8Array(lh.buffer), name, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+    ch.setUint16(12, 0, true); ch.setUint16(14, 0x21, true); ch.setUint32(16, crc, true); ch.setUint32(20, data.length, true);
+    ch.setUint32(24, data.length, true); ch.setUint16(28, name.length, true); ch.setUint32(42, off, true);
+    cen.push(new Uint8Array(ch.buffer), name);
+    off += 30 + name.length + data.length;
+  });
+  let cs = 0; cen.forEach((a) => { cs += a.length; });
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, cs, true); end.setUint32(16, off, true);
+  const all = parts.concat(cen, [new Uint8Array(end.buffer)]);
+  let n = 0; all.forEach((a) => { n += a.length; });
+  const out = new Uint8Array(n); let q = 0; all.forEach((a) => { out.set(a, q); q += a.length; });
+  return out;
+}
+function saveFile(name, data, type) {
+  const b = new Blob([data], { type }), a = document.createElement('a');
+  a.href = URL.createObjectURL(b); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+function kitFiles() {
+  const p = kitParams();
+  return [{ name: 'README.txt', text: readme(p) }, { name: 'report.html', text: reportHtml(p) }, { name: 'run.csv', text: runCsv() },
+    { name: 'bom.csv', text: bomCsv(p) }, { name: 'finger_rig.scad', text: fingerScad(p) }, { name: 'bend_jig.scad', text: bendScad(p) },
+    { name: 'tube_clamp.scad', text: clampScad(p) }, { name: 'make_stl.sh', text: makeSh() }];
+}
+function renderKit() {
+  HS = clamp((+kEl.len.value || 101) / 101, 0.6, 1.3);
+  $('o-klen').textContent = 'scale ' + HS.toFixed(2);
+  const p = kitParams(), top = Math.max(p.armK, p.armP) + 3.5 + p.T / 2, f1 = (v) => v.toFixed(1);
+  const row = (n, a, b, c) => '<tr><td>' + n + '</td><td>' + a + '</td><td>' + b + '</td><td>' + c + '</td></tr>';
+  $('k-parts').innerHTML = '<table class="num"><thead><tr><th>Part</th><th>Length</th><th>Width</th><th>Height</th></tr></thead><tbody>' +
+    row('Base block', '40', f1(p.W), f1(top)) + row('Proximal segment', f1(p.L0), f1(p.W), f1(p.T)) +
+    row('Middle and tip', f1(p.Lm), f1(p.W), f1(p.T)) + row('Bend jigs, 6', 'about 100', '28', '8') + row('Tube clamp, 2 halves', '20', '16', '7') +
+    '</tbody></table>';
+  const sK = p.armK * Math.PI / 2, sP = p.armP * 110 * D2R;
+  $('k-stroke').textContent = 'Stroke needed: ' + sK.toFixed(1) + ' mm at the knuckle and ' + sP.toFixed(1) + ' mm at the middle joint. Pick actuators with at least ' + Math.ceil(Math.max(sK, sP) * 1.25) + ' mm.';
+  $('k-note').textContent = inViewer ? 'Downloads are turned off in this preview. Open the saved page from your computer or repo to download the zip and report. You can still copy the finger SCAD here.' : '';
+  dirtyLines = true; needUI = true;
+}
+['len', 'digit', 'tube', 'pin', 'clr'].forEach((k) => kEl[k].addEventListener('input', renderKit));
+kEl.digit.addEventListener('change', renderKit);
+$('k-zip').addEventListener('click', () => saveFile('beadline-kit.zip', makeZip(kitFiles()), 'application/zip'));
+$('k-rep').addEventListener('click', () => saveFile('beadline-report.html', reportHtml(kitParams()), 'text/html'));
+$('k-scad').addEventListener('click', () => copyText(fingerScad(kitParams()), $('k-scad'), $('k-ta')));
+if (inViewer) { $('k-zip').disabled = true; $('k-rep').disabled = true; }
 
 /* ---------- start ---------- */
 try { if (gl) buildScene(); } catch (e) { gl = false; }
@@ -744,12 +1419,10 @@ if (gl) {
 }
 const pv = solvePinch();
 PINCH = mk(pv, [[50, 0, 70], [35, 0, 55], [40, 0, 60], [45, 0, 65]]);
-buildMap(); buildSum(); buildRows(); setMode(true); setGhostOpacity();
+buildMap(); buildSum(); buildRows(); buildPlan(); renderKit(); setMode(true); setGhostOpacity();
 setTargets(PINCH, 0, true);
 markView('angle');
 requestAnimationFrame(frame);
 })();
 </script>
-
-</body>
-</html>
+</body></html>
